@@ -1,0 +1,6 @@
+[submodule "libs/argumentum"]
+	path = libs/argumentum
+	url = https://github.com/lotricekCZ/argumentum.git
+[submodule "libs/yaml-cpp"]
+	path = libs/yaml-cpp
+	url = https://github.com/jbeder/yaml-cpp.git
