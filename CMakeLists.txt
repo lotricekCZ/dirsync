@@ -46,10 +46,6 @@ find_package(Threads REQUIRED)
 
 # if (YAML_CPP_FOUND)
 # 	# Print some message showing some of them
-message(STATUS "Toto: ${ARGUMENTUM_STATIC_NAME}")
-# 	message(STATUS "    version: ${YAML_CPP_VERSION}")
-# 	message(STATUS "    include path: ${YAML_CPP_INCLUDEDIR}" )
-# 	message(STATUS "    cpp flags: ${YAML_CPP_LIBRARIES}")
 # else ()
 # 	message(FATAL_ERROR "Could not locate yaml-cpp" \n)
 # endif()
@@ -83,11 +79,15 @@ message(STATUS "Toto: ${ARGUMENTUM_STATIC_NAME}")
 #~ target_link_libraries(serial -lCppLinuxSerial)
 # target_link_libraries(yaml_worker variables ${YAML_CPP_LIBRARIES})
 
+add_library(yaml_worker 	SHARED ${CMAKE_CURRENT_SOURCE_DIR}/src/yaml_worker/yaml_worker.cpp)
+add_library(variables 		SHARED ${CMAKE_CURRENT_SOURCE_DIR}/src/variables/variables.cpp)
 
+# Current building machine requires -lstdc++fs to be linked to any library that operates with filesystem
+target_link_libraries(yaml_worker variables ${YAML_CPP_LIBRARIES} ${DIRSYNC_LIBRARIES} stdc++fs)
 
-
-
-# link_directories(${OpenCV_LIB_DIR})
 target_compile_features(dirsync PRIVATE cxx_std_17)
+# link_directories(${OpenCV_LIB_DIR})
 
-target_link_libraries(dirsync Threads::Threads ${YAML_CPP_LIBRARIES} ${ARGUMENTUM_INTERNAL_NAME})
+target_link_libraries(dirsync 
+			Threads::Threads ${YAML_CPP_LIBRARIES} ${ARGUMENTUM_INTERNAL_NAME}
+			yaml_worker variables)
