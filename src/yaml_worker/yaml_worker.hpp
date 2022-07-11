@@ -1,6 +1,7 @@
 #include <filesystem>
 #include <string>
 #include <memory>
+#include <fstream>
 #include "../variables/variables.hpp"
 #include <yaml-cpp/yaml.h>
 
@@ -13,8 +14,9 @@ class yaml_worker {
 		std::filesystem::path settings;
 	public:
 		std::shared_ptr<variables> variable_table;
-		yaml_worker(std::string file);
+		explicit yaml_worker(std::string file);
 		void read();
+		void write();
 		void init();
 	};
 

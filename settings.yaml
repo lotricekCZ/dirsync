@@ -1,8 +1,3 @@
-# number of chars which are important for recognition
-significant: 666
-
 directories: []
-
-# file extensions which don't count
-blacklist: [".xml", ".bk"]
-# allowed_params:
+significant: 1
+blacklist: [.bk, .xml]

@@ -5,27 +5,45 @@
 #include <cinttypes>
 #include <filesystem>
 #include <string>
-
+#include <algorithm>
+#include <optional>
+#include <set>
 
 class variables {
 	private:	
 		std::filesystem::path settings;
-		uint16_t significant;
-		std::vector<std::filesystem::path> directories;
-		std::vector<std::string> blacklist;
+		std::set<std::filesystem::path> directories;
+		std::set<std::string> blacklist;
 	public:
-		std::vector<std::string> whitelist;
-		std::vector<std::filesystem::path> dir_list;
+		uint16_t significant;
+		std::optional<std::vector<std::string>> whitelist;
+		std::optional<std::vector<std::filesystem::path>> dir_list;
+		bool operation; // insert 0 or remove 1
 		variables() = default;
-		void init();
-
+		bool init();
+		bool loop();
+		
 		uint16_t get_significant(); // returns sig or 1 if sig is 0
-		std::vector<std::filesystem::path> get_directories();
-		std::vector<std::string> get_blacklist();
+		std::set<std::filesystem::path> get_directories();
+		std::set<std::string> get_blacklist();
 
-		void set_significant(uint16_t);
+		bool set_significant(uint16_t);
+		void set_directories(std::set<std::string>);
+		void set_directories(std::set<std::filesystem::path>);
 		void set_directories(std::vector<std::filesystem::path>);
+		void set_directories(std::vector<std::string>);
+
+		void set_blacklist(std::set<std::string>);
 		void set_blacklist(std::vector<std::string>);
+
+		bool insert_directory(std::vector<std::filesystem::path>);
+		bool insert_blacklist(std::vector<std::string>);
+
+		bool remove_directory(std::vector<std::filesystem::path>);
+		bool remove_blacklist(std::vector<std::string>);
+
+		bool update_directory();
+		bool update_blacklist();
 	};
 
 
