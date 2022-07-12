@@ -16,6 +16,7 @@
 #include "./yaml_worker/yaml_worker.hpp"
 #include "./variables/variables.hpp"
 #include "./found_file/found_file.hpp"
+#include "./file_list/file_list.hpp"
 
 // using namespace argumentum;
 
@@ -23,15 +24,16 @@ int main(int argc, char** argv){
 	// printf("%s: %i\n", __PRETTY_FUNCTION__, __LINE__);
 	std::shared_ptr<variables> variable_table(new variables());
 	yaml_worker worker("../settings.yaml");
-	worker.variable_table = variable_table;
+	file_list files;
+
+	worker.variable_table = files.variable_table = variable_table;
 	worker.read();
+	
+	
 	for(auto i : variable_table -> get_blacklist())
 		std::cout << i << std::endl;
 	printf("%s: %i\n", __PRETTY_FUNCTION__, __LINE__);
-	std::vector<int> numbers;
-	// std::vector<std::string> numbers;
-	bool isSum = false;
-	
+		
 
 	auto parser = argumentum::argument_parser{};
 	parser.config().program(argv[0]).description("Accumulator");
@@ -69,47 +71,12 @@ int main(int argc, char** argv){
 	// 	return 1;
 	worker.write();
 
-	std::vector<found_file> files;
 	found_file::significant = &variable_table -> significant;
-	// for(auto i: variable_table -> get_directories())
-	// 	for(auto const& o: std::filesystem::directory_iterator{i}){
-	// 		bool ok = false;
-	// 		for(auto u: variable_table -> get_blacklist())
-	// 			if(u == std::filesystem::path(o).extension().string())
-	// 				ok = true;
-	// 		if(!ok)
-	// 			std::cout << std::filesystem::path(o).filename().string() << std::endl;
-	// 		}
-	
-	for(auto i: variable_table -> get_directories())
-		for(auto const& o: std::filesystem::directory_iterator{i}){
-			bool ok = false;
-			for(auto u: variable_table -> get_blacklist())
-				if(u == std::filesystem::path(o).extension().string())
-					ok = true;
-			// if the file extension isn't among ignored
-			if(!ok){
-				std::vector<found_file>::iterator index = files.end();
-				auto path = std::filesystem::path(o);
-				for(std::vector<found_file>::iterator j = files.begin(); j != files.end(); j++){
-					found_file found = *j;
-					if(found == path)
-						index = j;
-					}
-				if(index == files.end()){
-					files.emplace_back(path);
-					} else {
-						index -> insert(path);
-						}
-				}
-			}
+	files.push_back();
 	
 	for(auto o: files)
 		std::cout << o.print() << std::endl;
 	printf("\nsamostatnych souboru: %i\n", files.size());
-	// auto mmax = [](auto&& a, auto&& b) {return std::max(a, b);};
-	// auto acc = isSum ? accumulate(numbers.begin(), numbers.end(), 0)
-	// 				: accumulate(numbers.begin(), numbers.end(), INT_MIN, mmax);
-	// std::cout << acc << "\n";
+
 	return 0;
 	}
