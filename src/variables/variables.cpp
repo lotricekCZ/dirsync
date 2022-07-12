@@ -100,6 +100,7 @@ bool variables::insert_blacklist(std::vector<std::string> list){
 bool variables::update_blacklist(){
 	if(whitelist)
 		return ((operation)? remove_blacklist(*whitelist): insert_blacklist(*whitelist));
+	whitelist.reset();
 	return false;
 	}
 
@@ -108,6 +109,7 @@ bool variables::update_blacklist(){
 bool variables::update_directory(){
 	if(dir_list)
 		return ((operation)? remove_directory(*dir_list): insert_directory(*dir_list));
+	dir_list.reset();
 	return false;
 	}
 

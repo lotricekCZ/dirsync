@@ -20,18 +20,20 @@ void yaml_worker::read(){
 
 
 void yaml_worker::write(){
-	uint16_t significant = variable_table -> get_significant();
 	this -> read();
-	variable_table -> set_significant(significant);
+	if(variable_table -> significant_tmp){
+		variable_table -> set_significant(*variable_table -> significant_tmp);
+		variable_table -> significant_tmp.reset();
+		}
 	YAML::Emitter out;
 	std::ofstream f_out(settings);
 	// out << config;
 	variable_table -> loop();
 	out.SetIndent(4);
-	out.SetSeqFormat(YAML::Flow);
 	out << YAML::BeginMap;
 	out << YAML::Key << "directories";
 	out << YAML::Value << variable_table -> get_directories();
+	out.SetSeqFormat(YAML::Flow);
 	out << YAML::Key << "significant";
 	out << YAML::Value << variable_table -> get_significant();
 	out << YAML::Key << "blacklist";

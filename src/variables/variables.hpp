@@ -18,6 +18,7 @@ class variables {
 		uint16_t significant;
 		std::optional<std::vector<std::string>> whitelist;
 		std::optional<std::vector<std::filesystem::path>> dir_list;
+		std::optional<uint16_t> significant_tmp;
 		bool operation; // insert 0 or remove 1
 		variables() = default;
 		bool init();

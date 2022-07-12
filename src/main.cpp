@@ -11,9 +11,11 @@
 #include <algorithm>
 #include <memory>
 #include <optional>
+#include <set>
 
 #include "./yaml_worker/yaml_worker.hpp"
 #include "./variables/variables.hpp"
+#include "./found_file/found_file.hpp"
 
 // using namespace argumentum;
 
@@ -39,7 +41,7 @@ int main(int argc, char** argv){
 	// 	.nargs(0)
 	// 	.help("Sum the integers (default: find the max)");
 
-	params.add_parameter(variable_table -> significant, "--important", "-i")
+	params.add_parameter(variable_table -> significant_tmp, "--important", "-i")
 		.nargs(1)
 		.metavar("int")
 		.help("Overwrites current number of significant characters.");
@@ -62,9 +64,49 @@ int main(int argc, char** argv){
 	// for (auto const& dir_entry : std::filesystem::recursive_directory_iterator{p}){
     //     std::cout << dir_entry << " je soubor\n";
     // 	}
-	if(!parser.parse_args(argc, argv, 1))
-		return 1;
+	parser.parse_args(argc, argv, 1);
+	// if(!parser.parse_args(argc, argv, 1))
+	// 	return 1;
 	worker.write();
+
+	std::vector<found_file> files;
+	found_file::significant = &variable_table -> significant;
+	// for(auto i: variable_table -> get_directories())
+	// 	for(auto const& o: std::filesystem::directory_iterator{i}){
+	// 		bool ok = false;
+	// 		for(auto u: variable_table -> get_blacklist())
+	// 			if(u == std::filesystem::path(o).extension().string())
+	// 				ok = true;
+	// 		if(!ok)
+	// 			std::cout << std::filesystem::path(o).filename().string() << std::endl;
+	// 		}
+	
+	for(auto i: variable_table -> get_directories())
+		for(auto const& o: std::filesystem::directory_iterator{i}){
+			bool ok = false;
+			for(auto u: variable_table -> get_blacklist())
+				if(u == std::filesystem::path(o).extension().string())
+					ok = true;
+			// if the file extension isn't among ignored
+			if(!ok){
+				std::vector<found_file>::iterator index = files.end();
+				auto path = std::filesystem::path(o);
+				for(std::vector<found_file>::iterator j = files.begin(); j != files.end(); j++){
+					found_file found = *j;
+					if(found == path)
+						index = j;
+					}
+				if(index == files.end()){
+					files.emplace_back(path);
+					} else {
+						index -> insert(path);
+						}
+				}
+			}
+	
+	for(auto o: files)
+		std::cout << o.print() << std::endl;
+	printf("\nsamostatnych souboru: %i\n", files.size());
 	// auto mmax = [](auto&& a, auto&& b) {return std::max(a, b);};
 	// auto acc = isSum ? accumulate(numbers.begin(), numbers.end(), 0)
 	// 				: accumulate(numbers.begin(), numbers.end(), INT_MIN, mmax);

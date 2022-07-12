@@ -81,6 +81,7 @@ find_package(Threads REQUIRED)
 
 add_library(yaml_worker 	SHARED ${CMAKE_CURRENT_SOURCE_DIR}/src/yaml_worker/yaml_worker.cpp)
 add_library(variables 		SHARED ${CMAKE_CURRENT_SOURCE_DIR}/src/variables/variables.cpp)
+add_library(found_file 		SHARED ${CMAKE_CURRENT_SOURCE_DIR}/src/found_file/found_file.cpp)
 
 # Current building machine requires -lstdc++fs to be linked to any library that operates with filesystem
 target_link_libraries(yaml_worker variables ${YAML_CPP_LIBRARIES} ${DIRSYNC_LIBRARIES} stdc++fs)
@@ -90,4 +91,4 @@ target_compile_features(dirsync PRIVATE cxx_std_17)
 
 target_link_libraries(dirsync 
 			Threads::Threads ${YAML_CPP_LIBRARIES} ${ARGUMENTUM_INTERNAL_NAME}
-			yaml_worker variables)
+			yaml_worker variables found_file)
