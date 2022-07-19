@@ -41,7 +41,13 @@ target_link_libraries(${DIRSYNC_PROJECT_NAME} ${DIRSYNC_LIBRARIES} ${ARGUMENTUM_
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 
 find_package(Threads REQUIRED)
-# find_package(PkgConfig REQUIRED)
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(GTK3 REQUIRED gtkmm-3.0)
+include_directories(${GTK3_INCLUDE_DIRS})
+link_directories(${GTK3_LIBRARY_DIRS})
+# Add other flags to the compiler
+add_definitions(${GTK3_CFLAGS_OTHER})
+
 # pkg_search_module(YAML_CPP REQUIRED yaml-cpp)
 
 # if (YAML_CPP_FOUND)
@@ -90,7 +96,9 @@ target_link_libraries(file_list found_file)
 
 target_compile_features(dirsync PRIVATE cxx_std_17)
 # link_directories(${OpenCV_LIB_DIR})
+# Link the target to the GTK+ libraries
+# target_link_libraries(hello ${GTK3_LIBRARIES})
 
 target_link_libraries(dirsync 
 			Threads::Threads ${YAML_CPP_LIBRARIES} ${ARGUMENTUM_INTERNAL_NAME}
-			yaml_worker variables found_file file_list)
+			yaml_worker variables found_file file_list ${GTK3_LIBRARIES})
