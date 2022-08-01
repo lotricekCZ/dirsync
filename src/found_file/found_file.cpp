@@ -39,8 +39,20 @@ std::filesystem::path found_file::get_filename(){
 
 
 
+std::filesystem::path found_file::get_stem(){
+	return this -> filename.stem();
+	}
+
+
+
 std::string found_file::print(){
 	if(get_occurence_count() < 2)
 		return ("|> " + std::to_string(get_occurence_count()) + " <|  name: " + filename.string());
 	return ("|  " + std::to_string(get_occurence_count()) + "  |  name: " + filename.string());
+	}
+
+
+
+uint16_t found_file::get_significant(){
+	return ((*significant)? *significant: 1);
 	}

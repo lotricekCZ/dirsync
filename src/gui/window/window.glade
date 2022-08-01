@@ -64,6 +64,8 @@ as the name is changed.
       <column type="guint"/>
       <!-- column-name filetypes -->
       <column type="gchararray"/>
+      <!-- column-name color -->
+      <column type="gchararray"/>
     </columns>
     <data>
       <row>
@@ -72,6 +74,15 @@ as the name is changed.
         <col id="2" translatable="yes"/>
         <col id="3">0</col>
         <col id="4" translatable="yes"/>
+        <col id="5" translatable="yes">rgb(164,0,0)</col>
+      </row>
+      <row>
+        <col id="0">0</col>
+        <col id="1">False</col>
+        <col id="2" translatable="yes">KArel</col>
+        <col id="3">0</col>
+        <col id="4" translatable="yes"/>
+        <col id="5" translatable="yes">rgb(164,0,0)</col>
       </row>
     </data>
   </object>
@@ -794,6 +805,9 @@ as the name is changed.
                             <property name="title" translatable="yes">vybrat</property>
                             <child>
                               <object class="GtkCellRendererToggle" id="select"/>
+                              <attributes>
+                                <attribute name="cell-background-rgba">5</attribute>
+                              </attributes>
                             </child>
                           </object>
                         </child>
@@ -804,7 +818,9 @@ as the name is changed.
                             <child>
                               <object class="GtkCellRendererText" id="count"/>
                               <attributes>
+                                <attribute name="cell-background-rgba">5</attribute>
                                 <attribute name="text">3</attribute>
+                                <attribute name="background-rgba">5</attribute>
                               </attributes>
                             </child>
                           </object>
@@ -816,18 +832,24 @@ as the name is changed.
                             <child>
                               <object class="GtkCellRendererText" id="name"/>
                               <attributes>
+                                <attribute name="cell-background-rgba">5</attribute>
                                 <attribute name="text">2</attribute>
+                                <attribute name="background-rgba">5</attribute>
                               </attributes>
                             </child>
                           </object>
                         </child>
                         <child>
                           <object class="GtkTreeViewColumn" id="available_filetypes">
+                            <property name="resizable">True</property>
                             <property name="title" translatable="yes">dostupné přípony</property>
                             <child>
                               <object class="GtkCellRendererText" id="filetypes"/>
                               <attributes>
+                                <attribute name="cell-background-rgba">5</attribute>
+                                <attribute name="background-gdk">5</attribute>
                                 <attribute name="text">4</attribute>
+                                <attribute name="background-rgba">5</attribute>
                               </attributes>
                             </child>
                           </object>
