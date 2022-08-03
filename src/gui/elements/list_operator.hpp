@@ -20,8 +20,11 @@ class list_operator: public Glib::RefPtr<Gtk::TreeView>,
 		list_operator(Glib::RefPtr<Gtk::Builder> b, std::string label_name, std::string label_name_store);
 		~list_operator() = default;
 		void clear();
+		Gtk::TreeModel::iterator erase(const Gtk::TreeModel::iterator& iter);
+		Gtk::TreeModel::iterator get_iter(const Glib::ustring& path_string);
 		Gtk::TreeModel::iterator add_row();
 		Gtk::TreeModel::Children children();
+		Gtk::TreeViewColumn* get_column(int n);
 		template<typename ColumnType>
 		int append_column(const Glib::ustring& title, 
 				const Gtk::TreeModelColumn<ColumnType>& model_column);

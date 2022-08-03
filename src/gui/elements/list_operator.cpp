@@ -38,6 +38,15 @@ Gtk::TreeModel::iterator list_operator::add_row(){
 
 
 
+Gtk::TreeModel::iterator list_operator::get_iter(const Glib::ustring& path_string){
+	// printf("%s: %i\n", __PRETTY_FUNCTION__, __LINE__);
+	// printf("is valid: %i\n", 
+	// 	(static_cast<Glib::RefPtr<Gtk::ListStore>>(*this) -> iter_is_valid(static_cast<Glib::RefPtr<Gtk::ListStore>>(*this) -> get_iter(path_string))));
+	return (static_cast<Glib::RefPtr<Gtk::ListStore>>(*this) -> get_iter(path_string));
+	}
+
+
+
 Gtk::TreeModel::Children list_operator::children(){
 	return static_cast<Glib::RefPtr<Gtk::ListStore>>(*this) -> children();
 	}
@@ -46,6 +55,18 @@ Gtk::TreeModel::Children list_operator::children(){
 
 void list_operator::set_model(const Glib::RefPtr<Gtk::TreeModel>& model){
 	static_cast<Glib::RefPtr<Gtk::TreeView>>(*this) -> set_model(model);
+	}
+
+
+
+Gtk::TreeViewColumn* list_operator::get_column(int n){
+	return static_cast<Glib::RefPtr<Gtk::TreeView>>(*this) -> get_column(n);
+	}
+
+
+
+Gtk::TreeModel::iterator list_operator::erase(const Gtk::TreeModel::iterator& iter){
+	return static_cast<Glib::RefPtr<Gtk::ListStore>>(*this) -> erase(iter);
 	}
 
 

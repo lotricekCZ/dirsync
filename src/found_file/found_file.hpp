@@ -4,6 +4,7 @@
 #include <string>
 #include <filesystem>
 #include <cinttypes>
+#include <cstdio>
 #include <iostream>
 #include <set>
 

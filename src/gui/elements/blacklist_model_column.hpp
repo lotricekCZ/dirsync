@@ -1,5 +1,5 @@
-#ifndef folder_model_column_hpp
-#define folder_model_column_hpp
+#ifndef blacklist_model_column_hpp
+#define blacklist_model_column_hpp
 
 #include <gtkmm/button.h>
 #include <gtkmm/label.h>
@@ -9,13 +9,13 @@
 #include <glib.h>
 #include <string>
 
-class folder_column : public Gtk::TreeModel::ColumnRecord{
+class blacklist_column : public Gtk::TreeModel::ColumnRecord{
 	public:
-		folder_column() {add(editable); add(selected); add(name);}
-		folder_column(const folder_column &) {add(editable);add(selected); add(name);}
+		blacklist_column() {add(editable); add(selected); add(name);}
+		blacklist_column(const blacklist_column &) {add(editable);add(selected); add(name);}
 		Gtk::TreeModelColumn<bool> 				editable;
 		Gtk::TreeModelColumn<bool> 				selected;
 		Gtk::TreeModelColumn<Glib::ustring> 	name;
 	};
 
-#endif // folder_model_column
+#endif // blacklist_model_column

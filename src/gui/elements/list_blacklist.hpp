@@ -1,5 +1,5 @@
-#ifndef list_folder_hpp
-#define list_folder_hpp
+#ifndef list_blacklist_hpp
+#define list_blacklist_hpp
 
 #include "../../found_file/found_file.hpp"
 #include "../../variables/variables.hpp"
@@ -14,21 +14,19 @@
 #include <filesystem>
 #include <string>
 #include <memory>
-#include <optional>
 
-class list_folder: public std::shared_ptr<list_operator>, 
+class list_blacklist: public std::shared_ptr<list_operator>, 
 				public std::shared_ptr<folder_column> {
 	public:
 		uint64_t _id = 0;
-		bool edited = 0;
-		list_folder() = default;
-		list_folder(Glib::RefPtr<Gtk::Builder>& b, std::string label_name, std::string label_name_store);
+		bool edited;
+		list_blacklist() = default;
+		list_blacklist(Glib::RefPtr<Gtk::Builder>& b, std::string label_name, std::string label_name_store);
 		std::shared_ptr<variables> vars;
-		virtual ~list_folder() = default;
+		virtual ~list_blacklist() = default;
 		void add(std::filesystem::path& f);
-		std::optional<Gtk::TreeModel::iterator> add();
+		Gtk::TreeModel::iterator add();
 		void clear();
-		void print();
 		std::vector<bool> get_checked();
 		void clear_selected();
 		// void remove(std::filesystem::path& f);
@@ -37,4 +35,4 @@ class list_folder: public std::shared_ptr<list_operator>,
 		//Member widgets:
 	};
 
-#endif // list_folder_hpp
+#endif // list_blacklist_hpp

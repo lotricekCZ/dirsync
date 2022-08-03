@@ -42,11 +42,11 @@ set(THREADS_PREFER_PTHREAD_FLAG ON)
 
 find_package(Threads REQUIRED)
 find_package(PkgConfig REQUIRED)
-pkg_check_modules(GTK3 REQUIRED gtkmm-3.0)
-include_directories(${GTK3_INCLUDE_DIRS})
-link_directories(${GTK3_LIBRARY_DIRS})
+pkg_check_modules(GTKMM3 REQUIRED gtkmm-3.0)
+include_directories(${GTKMM3_INCLUDE_DIRS})
+link_directories(${GTKMM3_LIBRARY_DIRS})
 # Add other flags to the compiler
-add_definitions(${GTK3_CFLAGS_OTHER})
+add_definitions(${GTKMM3_CFLAGS_OTHER})
 
 # pkg_search_module(YAML_CPP REQUIRED yaml-cpp)
 
@@ -89,16 +89,19 @@ add_library(yaml_worker 	SHARED ${CMAKE_CURRENT_SOURCE_DIR}/src/yaml_worker/yaml
 add_library(variables 		SHARED ${CMAKE_CURRENT_SOURCE_DIR}/src/variables/variables.cpp)
 add_library(found_file 		SHARED ${CMAKE_CURRENT_SOURCE_DIR}/src/found_file/found_file.cpp)
 add_library(file_list 		SHARED ${CMAKE_CURRENT_SOURCE_DIR}/src/file_list/file_list.cpp)
+add_library(double_text		SHARED ${CMAKE_CURRENT_SOURCE_DIR}/src/gui/elements/double_text.cpp)
+add_library(list_folder		SHARED ${CMAKE_CURRENT_SOURCE_DIR}/src/gui/elements/list_folder.cpp)
 
 # Current building machine requires -lstdc++fs to be linked to any library that operates with filesystem
 target_link_libraries(yaml_worker variables ${YAML_CPP_LIBRARIES} ${DIRSYNC_LIBRARIES} stdc++fs)
 target_link_libraries(file_list found_file)
+target_link_libraries(double_text ${GTKMM3_LIBRARIES})
 
 target_compile_features(dirsync PRIVATE cxx_std_17)
 # link_directories(${OpenCV_LIB_DIR})
 # Link the target to the GTK+ libraries
-# target_link_libraries(hello ${GTK3_LIBRARIES})
+# target_link_libraries(hello ${GTKMM3_LIBRARIES})
 
 target_link_libraries(dirsync 
 			Threads::Threads ${YAML_CPP_LIBRARIES} ${ARGUMENTUM_INTERNAL_NAME}
-			yaml_worker variables found_file file_list ${GTK3_LIBRARIES})
+			yaml_worker variables found_file file_list list_folder ${GTKMM3_LIBRARIES})

@@ -19,11 +19,17 @@ list_file::list_file(Glib::RefPtr<Gtk::Builder>& b, std::string label_name, std:
 				(*static_cast<std::shared_ptr<list_operator>>
 					(*this))	
 			);
-	// static_cast<std::shared_ptr<list_operator>> (*this) 
-	// 	-> append_column(Glib::ustring("name"), static_cast<std::shared_ptr<file_column>>(*this) -> name);
-	// static_cast<Glib::RefPtr<Gtk::TreeView>>
-	// 	(*static_cast<std::shared_ptr<list_operator>>
-	// 		(*this)) -> set_headers_visible(1);
+
+	auto l_op = static_cast<std::shared_ptr<list_operator>> (*this); 
+	auto fc = static_cast<std::shared_ptr<file_column>> (*this);
+	auto on_toggle = [this, fc, l_op] (const Glib::ustring& path){
+		auto iter = l_op -> get_iter(path);
+		(*iter)[fc -> selected] = !(*iter)[fc -> selected];
+		};
+
+
+	Glib::RefPtr<Gtk::CellRendererToggle>::cast_dynamic(b -> get_object("select")) -> signal_toggled()
+		.connect(on_toggle);
 	}
 
 
@@ -36,39 +42,14 @@ void list_file::add(found_file& f){
 	if(f.id == 0){
 		o = (static_cast<std::shared_ptr<list_operator>>(*this) -> add_row());
 		f.id = ++_id;
-		(**o)[static_cast<std::shared_ptr<file_column>>(*this) -> selected] = 0; // relevant only to those that are newly appended 
-		(**o)[static_cast<std::shared_ptr<file_column>>(*this) -> id] 		= f.id;
-		printf("%s: %i\n", __PRETTY_FUNCTION__, __LINE__);
+		(**o)[static_cast<std::shared_ptr<file_column>>(*this) -> selected] 
+			= 0; // relevant only to those that are newly appended 
+		(**o)[static_cast<std::shared_ptr<file_column>>(*this) -> id] 	
+			= f.id;
+		// printf("%s: %i\n", __PRETTY_FUNCTION__, __LINE__);
 		} else {
-			// *this)
-			Gtk::TreeModel::Children children = static_cast<Glib::RefPtr<Gtk::ListStore>>
-													(*static_cast<std::shared_ptr<list_operator>>
-															(*this)) -> children();
-			for(Gtk::TreeModel::iterator row = children.begin(); row != children.end(); ++row){
-				printf("%s: %i\n", __PRETTY_FUNCTION__, __LINE__);
-				uint64_t item_id = 5;
-				Gtk::TreeModel::Children elements = row -> children();
-				// Glib::ustring item_nm("");
-				// Gtk::TreeModelColumn<uint64_t> t = *elements[0];
-				printf("%s: %i\n", __PRETTY_FUNCTION__, __LINE__);
-				item_id = (*row)[static_cast<std::shared_ptr<file_column>>(*this) -> id];
-				Glib::ustring item_nm = (*row)[static_cast<std::shared_ptr<file_column>>(*this) -> name];
-				Glib::ustring item_ft = (*row)[static_cast<std::shared_ptr<file_column>>(*this) -> filetypes];
-				printf("%s: %i\n", __PRETTY_FUNCTION__, __LINE__);
-				// row -> get_value(columns::name, item_nm);
-				printf("%s: %i\n", __PRETTY_FUNCTION__, __LINE__);
-				printf("value: %s\t%s\t%i\n", item_nm.c_str(), item_ft.c_str(), item_id);
-				// printf("value: %s\n", item_ft.c_str());
-				// printf("value: %s\n", item_nm.c_str());
-				// printf("value: %i\n", item_id);
-				if(item_id ==  f.id){
-					printf("%s: %i\n", __PRETTY_FUNCTION__, __LINE__);
-					o = row;
-					printf("%s: %i\n", __PRETTY_FUNCTION__, __LINE__);
-					break;
-					}
-				}
-				printf("%s: %i\n", __PRETTY_FUNCTION__, __LINE__);
+			o = get_iter(f.id);
+			// printf("%s: %i\n", __PRETTY_FUNCTION__, __LINE__);
 			}// means it never came through system
 	auto filetypes = [f](){
 		std::stringstream s("");
@@ -103,13 +84,41 @@ void list_file::add(found_file& f){
 	printf("%s: %i\n", __PRETTY_FUNCTION__, __LINE__);
 	(**o)[static_cast<std::shared_ptr<file_column>>(*this) -> color]
 		= std::string("rgb(25, 10, 45)");
-	printf("%s: %i\n", __PRETTY_FUNCTION__, __LINE__);
-
-	// o[static_cast<std::shared_ptr<file_column>>(*this) -> number] = 666;
 	// printf("%s: %i\n", __PRETTY_FUNCTION__, __LINE__);
-	// static_cast<Glib::RefPtr<Gtk::TreeView>>
-	// 	(*static_cast<std::shared_ptr<list_operator>>
-	// 		(*this)) -> show();
+	}
+
+
+
+void list_file::remove(found_file& f){
+	remove(f.id);
+	}
+
+
+
+void list_file::remove(uint32_t id){
+	// printf("%s: %i\n", __PRETTY_FUNCTION__, __LINE__);
+	if(id == 0) return; // invalid id
+	// printf("%s: %i\n", __PRETTY_FUNCTION__, __LINE__);
+	auto iter = get_iter(id);
+	if(iter) static_cast<std::shared_ptr<list_operator>> (*this) -> erase(*iter);
+	}
+
+
+
+std::optional<Gtk::TreeModel::iterator> list_file::get_iter(uint32_t id){
+	std::optional<Gtk::TreeModel::iterator> o;
+	Gtk::TreeModel::Children children = static_cast<Glib::RefPtr<Gtk::ListStore>>
+											(*static_cast<std::shared_ptr<list_operator>>
+													(*this)) -> children();
+	for(Gtk::TreeModel::iterator row = children.begin(); row != children.end(); ++row){
+	// printf("%s: %i\n", __PRETTY_FUNCTION__, __LINE__);
+		uint64_t item_id = (*row)[static_cast<std::shared_ptr<file_column>>(*this) -> id];
+		if(item_id == id){
+			o = row;
+			break;
+			}
+		}
+	return o;
 	}
 
 // void list_file::append() {

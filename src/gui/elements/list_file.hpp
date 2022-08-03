@@ -18,25 +18,14 @@
 
 class list_file: public std::shared_ptr<list_operator>, std::shared_ptr<file_column> {
 	public:
-		enum columns: uint8_t {
-			id 							= 0,
-			selected 					= 1,
-			name 						= 2,
-			number_of_occurences 		= 3,
-			filetypes 					= 4,
-			color 						= 5
-			};
 		uint64_t _id = 0;
 		list_file() = default;
 		list_file(Glib::RefPtr<Gtk::Builder>& b, std::string label_name, std::string label_name_store);
 		virtual ~list_file() = default;
 		void add(found_file& f);
-
-		// void operator = (list_file rhs){
-		// 	static_cast<list_operator>(*this) = static_cast<list_operator>(rhs);
-		// 	// *this = rhs;
-		// 	}
-
+		void remove(found_file& f);
+		void remove(uint32_t id);
+		std::optional<Gtk::TreeModel::iterator> get_iter(uint32_t id);
 	protected:
 		//Member widgets:
 	};
