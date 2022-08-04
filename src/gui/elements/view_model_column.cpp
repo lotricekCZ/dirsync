@@ -1,0 +1,1 @@
+#include "view_model_column.hpp"

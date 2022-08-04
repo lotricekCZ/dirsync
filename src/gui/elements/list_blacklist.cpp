@@ -5,11 +5,11 @@
 
 list_blacklist::list_blacklist(Glib::RefPtr<Gtk::Builder>& b, std::string label_name, std::string label_name_store): 
 	std::shared_ptr<list_operator>(new list_operator(b, label_name, label_name_store)),
-	std::shared_ptr<folder_column>(new folder_column()) {
+	std::shared_ptr<blacklist_column>(new blacklist_column()) {
 	
 	static_cast<std::shared_ptr<list_operator>> (*this) -> clear();
 	static_cast<std::shared_ptr<list_operator>> (*this) 
-		-> set_column_types(*static_cast<std::shared_ptr<folder_column>>(*this));
+		-> set_column_types(*static_cast<std::shared_ptr<blacklist_column>>(*this));
 	static_cast<std::shared_ptr<list_operator>> (*this) 
 		-> set_model(
 			static_cast<Glib::RefPtr<Gtk::ListStore>>
@@ -17,26 +17,26 @@ list_blacklist::list_blacklist(Glib::RefPtr<Gtk::Builder>& b, std::string label_
 					(*this))	
 			);
 	auto l_op = static_cast<std::shared_ptr<list_operator>> (*this); 
-	auto fc = static_cast<std::shared_ptr<folder_column>> (*this);
+	auto fc = static_cast<std::shared_ptr<blacklist_column>> (*this);
 	auto on_toggle = [this, fc, l_op, b] (const Glib::ustring& path){
 		auto iter = l_op -> get_iter(path);
 		(*iter)[fc -> selected] = !(*iter)[fc -> selected];
 		};
 
-	Glib::RefPtr<Gtk::CellRendererToggle>::cast_dynamic(b -> get_object("folder_select")) -> signal_toggled()
+	Glib::RefPtr<Gtk::CellRendererToggle>::cast_dynamic(b -> get_object("blacklist_select")) -> signal_toggled()
 		.connect(on_toggle);
 	}
 
 
 
-void list_blacklist::add(std::filesystem::path& f){
+void list_blacklist::add(std::string& f){
 	// static_cast<Glib::RefPtr<Gtk::ListStore>>(*this) -> append()
 	Gtk::TreeModel::iterator o 
 		= (static_cast<std::shared_ptr<list_operator>>(*this) -> add_row());
-	(*o)[static_cast<std::shared_ptr<folder_column>>(*this) -> selected] 
+	(*o)[static_cast<std::shared_ptr<blacklist_column>>(*this) -> selected] 
 		= 0;
-	(*o)[static_cast<std::shared_ptr<folder_column>>(*this) -> name]
-		= f.string();
+	(*o)[static_cast<std::shared_ptr<blacklist_column>>(*this) -> name]
+		= f;
 	}
 
 
@@ -44,25 +44,26 @@ void list_blacklist::add(std::filesystem::path& f){
 Gtk::TreeModel::iterator list_blacklist::add(){
 	// static_cast<Glib::RefPtr<Gtk::ListStore>>(*this) -> append()
 	if(edited){
-		std::vector<std::filesystem::path> p;
+		std::vector<std::string> p;
 		auto o = static_cast<Glib::RefPtr<Gtk::ListStore>>
 					(*static_cast<std::shared_ptr<list_operator>>
 							(*this)) -> children();
 
 		Glib::ustring s;
 		for(Gtk::TreeModel::iterator row = o.begin(); row != o.end(); ++row){
-			s = ((*row)[static_cast<std::shared_ptr<folder_column>>(*this) -> name]);
-			if(std::filesystem::exists(std::filesystem::path(s.c_str())))
+			s = ((*row)[static_cast<std::shared_ptr<blacklist_column>>(*this) -> name]);
+			std::string ext(s.c_str());
+			if(ext.size() && s.find('.') == 0)
 				p.emplace_back(s.c_str());
 			}
 		
-		vars -> insert_directory(p);
+		vars -> insert_blacklist(p);
 		}
 	Gtk::TreeModel::iterator o 
 		= (static_cast<std::shared_ptr<list_operator>>(*this) -> add_row());
-	(*o)[static_cast<std::shared_ptr<folder_column>>(*this) -> selected] 
+	(*o)[static_cast<std::shared_ptr<blacklist_column>>(*this) -> selected] 
 		= 0;
-	(*o)[static_cast<std::shared_ptr<folder_column>>(*this) -> editable] 
+	(*o)[static_cast<std::shared_ptr<blacklist_column>>(*this) -> editable] 
 		= edited  
 		= 1;
 	
@@ -77,9 +78,40 @@ void list_blacklist::clear(){
 
 
 void list_blacklist::clear_selected(){
-	auto selected = get_checked();
-	auto total = vars -> get_blacklist();
-	static_cast<std::shared_ptr<list_operator>> (*this) -> clear(); 
+	// auto selected = get_checked();
+	// auto total = vars -> get_blacklist();
+	// static_cast<std::shared_ptr<list_operator>> (*this) -> clear();
+
+	printf("%s: %i\n", __PRETTY_FUNCTION__, __LINE__);
+	std::vector<std::string> removed;
+	printf("%s: %i\n", __PRETTY_FUNCTION__, __LINE__);
+	// auto total = vars -> get_directories();
+	printf("%s: %i\n", __PRETTY_FUNCTION__, __LINE__);
+	Gtk::TreeModel::Children children = static_cast<Glib::RefPtr<Gtk::ListStore>>
+											(*static_cast<std::shared_ptr<list_operator>>
+													(*this)) -> children();
+	printf("%s: %i\n", __PRETTY_FUNCTION__, __LINE__);
+	uint32_t i = 0;
+	if(children.size()){
+		auto selected = get_checked();
+		for(Gtk::TreeModel::iterator row = children.begin(); row != children.end(); row++){
+			if(selected.at(i++)){
+				printf("%s: %i\n", __PRETTY_FUNCTION__, __LINE__);
+				Glib::ustring us = (*row)[static_cast<std::shared_ptr<blacklist_column>>(*this) -> name];
+				printf("%s: %i\n", __PRETTY_FUNCTION__, __LINE__);
+				row = static_cast<std::shared_ptr<list_operator>> (*this) -> erase(row);
+				if(us.size()) removed.emplace_back(us.c_str());
+				if(row == children.end()) { // last element removed, nothing to edit
+					edited = false;
+					break;
+					}
+				}
+			}
+		}
+	for(auto a: removed)
+		printf("removing %s\n", a.c_str());
+	vars -> remove_blacklist(removed);
+
 	}
 
 
@@ -91,7 +123,7 @@ std::vector<bool> list_blacklist::get_checked(){
 											(*static_cast<std::shared_ptr<list_operator>>
 													(*this)) -> children();
 	for(Gtk::TreeModel::iterator row = children.begin(); row != children.end(); ++row){
-		ret.push_back((*row)[static_cast<std::shared_ptr<folder_column>>(*this) -> selected]);
+		ret.push_back((*row)[static_cast<std::shared_ptr<blacklist_column>>(*this) -> selected]);
 		}
 	return ret;
 	}

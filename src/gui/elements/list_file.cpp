@@ -6,13 +6,12 @@
 list_file::list_file(Glib::RefPtr<Gtk::Builder>& b, std::string label_name, std::string label_name_store): 
 	std::shared_ptr<list_operator>(new list_operator(b, label_name, label_name_store)),
 	std::shared_ptr<file_column>(new file_column()) {
-	printf("%s: %i\n", __PRETTY_FUNCTION__, __LINE__);
+	
+	// printf("%s: %i\n", __PRETTY_FUNCTION__, __LINE__);
 	static_cast<std::shared_ptr<list_operator>> (*this) -> clear();
 	static_cast<std::shared_ptr<list_operator>> (*this) 
 		-> set_column_types(*static_cast<std::shared_ptr<file_column>>(*this));
-	static_cast<std::shared_ptr<list_operator>> (*this) 
-		-> set_column_types(*static_cast<std::shared_ptr<file_column>>(*this));
-	printf("%s: %i\n", __PRETTY_FUNCTION__, __LINE__);
+	// printf("%s: %i\n", __PRETTY_FUNCTION__, __LINE__);
 	static_cast<std::shared_ptr<list_operator>> (*this) 
 		-> set_model(
 			static_cast<Glib::RefPtr<Gtk::ListStore>>
@@ -35,9 +34,9 @@ list_file::list_file(Glib::RefPtr<Gtk::Builder>& b, std::string label_name, std:
 
 
 void list_file::add(found_file& f){
-	// printf("%s: %i\n", __PRETTY_FUNCTION__, __LINE__);
+	// // printf("%s: %i\n", __PRETTY_FUNCTION__, __LINE__);
 	// static_cast<Glib::RefPtr<Gtk::ListStore>>(*this) -> append()
-	printf("%s: %i\n", __PRETTY_FUNCTION__, __LINE__);
+	// printf("%s: %i\n", __PRETTY_FUNCTION__, __LINE__);
 	std::optional<Gtk::TreeModel::iterator> o;
 	if(f.id == 0){
 		o = (static_cast<std::shared_ptr<list_operator>>(*this) -> add_row());
@@ -72,16 +71,16 @@ void list_file::add(found_file& f){
 	filetypes
 	color
 	*/
-	printf("%s: %i\n", __PRETTY_FUNCTION__, __LINE__);
+	// printf("%s: %i\n", __PRETTY_FUNCTION__, __LINE__);
 	(**o)[static_cast<std::shared_ptr<file_column>>(*this) -> name]
 		= f.get_stem().string().substr(0, f.get_significant());
-	printf("%s: %i\n", __PRETTY_FUNCTION__, __LINE__);
+	// printf("%s: %i\n", __PRETTY_FUNCTION__, __LINE__);
 	(**o)[static_cast<std::shared_ptr<file_column>>(*this) -> number]
 		= (unsigned long)f.get_occurence_count();
-	printf("%s: %i\n", __PRETTY_FUNCTION__, __LINE__);
+	// printf("%s: %i\n", __PRETTY_FUNCTION__, __LINE__);
 	(**o)[static_cast<std::shared_ptr<file_column>>(*this) -> filetypes]
 		= filetypes();
-	printf("%s: %i\n", __PRETTY_FUNCTION__, __LINE__);
+	// printf("%s: %i\n", __PRETTY_FUNCTION__, __LINE__);
 	(**o)[static_cast<std::shared_ptr<file_column>>(*this) -> color]
 		= std::string("rgb(25, 10, 45)");
 	// printf("%s: %i\n", __PRETTY_FUNCTION__, __LINE__);
@@ -111,7 +110,7 @@ std::optional<Gtk::TreeModel::iterator> list_file::get_iter(uint32_t id){
 											(*static_cast<std::shared_ptr<list_operator>>
 													(*this)) -> children();
 	for(Gtk::TreeModel::iterator row = children.begin(); row != children.end(); ++row){
-	// printf("%s: %i\n", __PRETTY_FUNCTION__, __LINE__);
+		// printf("%s: %i\n", __PRETTY_FUNCTION__, __LINE__);
 		uint64_t item_id = (*row)[static_cast<std::shared_ptr<file_column>>(*this) -> id];
 		if(item_id == id){
 			o = row;
@@ -121,13 +120,6 @@ std::optional<Gtk::TreeModel::iterator> list_file::get_iter(uint32_t id){
 	return o;
 	}
 
-// void list_file::append() {
-//     count++;
 
-//     row = *(m_refTreeModel->append());
-//     row[m_Columns.m_col_id] = count;
-//     row[m_Columns.m_col_name] = todo_entry->get_text();
-//     row[m_Columns.m_col_percentage] = m_HScale.get_value();
-// }
 
 #endif // list_file_cpp

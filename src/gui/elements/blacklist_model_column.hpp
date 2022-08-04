@@ -12,7 +12,7 @@
 class blacklist_column : public Gtk::TreeModel::ColumnRecord{
 	public:
 		blacklist_column() {add(editable); add(selected); add(name);}
-		blacklist_column(const blacklist_column &) {add(editable);add(selected); add(name);}
+		blacklist_column(const blacklist_column &) {add(editable); add(selected); add(name);}
 		Gtk::TreeModelColumn<bool> 				editable;
 		Gtk::TreeModelColumn<bool> 				selected;
 		Gtk::TreeModelColumn<Glib::ustring> 	name;

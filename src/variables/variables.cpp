@@ -89,10 +89,10 @@ bool variables::insert_directory(std::vector<std::filesystem::path> dir){
 
 
 bool variables::insert_blacklist(std::vector<std::string> list){
-	bool removed = false;
+	bool inserted = false;
 	for(auto l: list)
-		removed |= this -> blacklist.insert(l).second;
-	return removed;
+		inserted |= this -> blacklist.insert(l).second;
+	return inserted;
 	}
 
 
@@ -130,5 +130,17 @@ bool variables::remove_blacklist(std::vector<std::string> list){
 	for(auto l: list)
 		removed |= blacklist.erase(l);
 	return removed;
+	}
+
+
+
+uint8_t variables::get_view_mode(){
+	return view_mode;
+	}
+
+
+
+void variables::set_view_mode(uint8_t v){
+	view_mode = (mode)v;
 	}
 
