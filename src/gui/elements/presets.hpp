@@ -3,6 +3,7 @@
 
 #include "../../found_file/found_file.hpp"
 #include "../../variables/variables.hpp"
+#include "double_text.hpp"
 #include "list_operator.hpp"
 #include "folder_model_column.hpp"
 #include "view_model_column.hpp"
@@ -12,8 +13,10 @@
 #include <gtkmm/label.h>
 #include <gtkmm/builder.h>
 #include <gtkmm/combobox.h>
+#include <gtkmm/filechooser.h>
 #include <string>
 #include <map>
+#include <any>
 
 class presets {
 	public:
@@ -30,16 +33,23 @@ class presets {
 
 		Glib::RefPtr<Gtk::ComboBox> 	option_operation;
 		Glib::RefPtr<Gtk::ListStore>	operations;
+		Glib::RefPtr<Gtk::FileChooser> 	temporary;
+
 		view_column view_mode();
+		void set_functions();
+		std::map<std::string, std::any> get_elements();
 		std::shared_ptr<variables> vars;
 
 		class expander {
 			public:
-				expander(Glib::RefPtr<Gtk::Builder> b, std::string label_add, std::string label_remove);
+				expander(Glib::RefPtr<Gtk::Builder> b, 
+						std::string label_add, std::string label_remove, 
+						std::string label, std::string number);
 				expander() = default;
 				// Glib::RefPtr<Gtk::SearchEntry> search;
 				Glib::RefPtr<Gtk::Button> add;
 				Glib::RefPtr<Gtk::Button> remove;
+				double_text count;
 			};
 		
 		class expander_folder: public std::shared_ptr<expander>, public std::shared_ptr<list_folder> {
@@ -47,7 +57,8 @@ class presets {
 				// using list_folder::add;
 				expander_folder(Glib::RefPtr<Gtk::Builder> b, std::shared_ptr<variables> vars, 
 					std::string label_add, std::string label_remove, 
-					std::string label_name, std::string label_name_store);
+					std::string label_name, std::string label_name_store,
+					std::string label, std::string number);
 				expander_folder() = default;
 				void set_variables(std::shared_ptr<variables> vars);
 			} e_folder;
@@ -56,7 +67,8 @@ class presets {
 			public:
 				expander_blacklist(Glib::RefPtr<Gtk::Builder> b, std::shared_ptr<variables> vars, 
 					std::string label_add, std::string label_remove, 
-					std::string label_name, std::string label_name_store);
+					std::string label_name, std::string label_name_store,
+					std::string label, std::string number);
 				expander_blacklist() = default;
 			} e_blacklist;
 	protected:

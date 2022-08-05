@@ -12,23 +12,29 @@ presets::presets(Glib::RefPtr<Gtk::Builder> b, std::map<std::string, std::string
 	ignore	 = Glib::RefPtr<Gtk::Button>::cast_dynamic(b -> get_object(name["ignore"]));
 	remove	 = Glib::RefPtr<Gtk::Button>::cast_dynamic(b -> get_object(name["remove"]));
 	refresh	 = Glib::RefPtr<Gtk::Button>::cast_dynamic(b -> get_object(name["refresh"]));
-
+	set_functions();
 	vars = v;
 
 	auto contains = [](auto name, auto key){
 		return (name.find(key) != name.end());
 		};
 	
-	if(contains(name, "folder_add") && contains(name, "folder_remove") && contains(name, "folder_view") && contains(name, "folder_store")) 
+	if(contains(name, "folder_add") && contains(name, "folder_remove") 
+		&& contains(name, "folder_view") && contains(name, "folder_store")
+		&& contains(name, "label_folder") && contains(name, "label_folder")) 
 		e_folder = expander_folder(b, vars, 
 			name["folder_add"], name["folder_remove"], 
-			name["folder_view"], name["folder_store"]);
-	printf("\n\n\n\n\n\n\n");
-	if(contains(name, "blacklist_add") && contains(name, "blacklist_remove") && contains(name, "blacklist_view") && contains(name, "blacklist_store")) 
+			name["folder_view"], name["folder_store"],
+			name["label_folder"], name["folder"]);
+
+	if(contains(name, "blacklist_add") && contains(name, "blacklist_remove") 
+		&& contains(name, "blacklist_view") && contains(name, "blacklist_store")
+		&& contains(name, "label_blacklist") && contains(name, "blacklist")) 
 		e_blacklist = expander_blacklist(b, vars, 
 			name["blacklist_add"], name["blacklist_remove"], 
-			name["blacklist_view"], name["blacklist_store"]);
-	printf("\n\n\n\nblacklist passed\n\n\n");
+			name["blacklist_view"], name["blacklist_store"], 
+			name["label_blacklist"], name["blacklist"]);
+
 	
 	printf("%s: %i\n", __PRETTY_FUNCTION__, __LINE__);
 	operations -> set_column_types(view_column());
@@ -50,12 +56,19 @@ presets::presets(Glib::RefPtr<Gtk::Builder> b, std::map<std::string, std::string
 
 
 
+void presets::set_functions(){
+	}
+
+
+
 presets::expander::expander(Glib::RefPtr<Gtk::Builder> b, 
-		std::string label_add, std::string label_remove){
+		std::string label_add, std::string label_remove, 
+		std::string label, std::string number){
 	// display_label.second -> set_text(std::to_string(label_value));
 	printf("%s: %i\n", __PRETTY_FUNCTION__, __LINE__);
 	this -> add 	= Glib::RefPtr<Gtk::Button>::cast_dynamic(b -> get_object(label_add));
 	this -> remove	= Glib::RefPtr<Gtk::Button>::cast_dynamic(b -> get_object(label_remove));
+	this -> count	= double_text(b, label, number);
 	printf("%s: %i\n", __PRETTY_FUNCTION__, __LINE__);
 	}
 
@@ -63,8 +76,9 @@ presets::expander::expander(Glib::RefPtr<Gtk::Builder> b,
 
 presets::expander_folder::expander_folder(Glib::RefPtr<Gtk::Builder> b, std::shared_ptr<variables> vars,
 		std::string label_add, std::string label_remove, 
-		std::string label_name, std::string label_name_store): 
-			std::shared_ptr<expander>	(new expander(b, label_add, label_remove)), 
+		std::string label_name, std::string label_name_store,
+		std::string label, std::string number): 
+			std::shared_ptr<expander>	(new expander(b, label_add, label_remove, label, number)), 
 			std::shared_ptr<list_folder>(new list_folder(b, label_name, label_name_store)){
 	printf("%s: %i\n", __PRETTY_FUNCTION__, __LINE__);
 	static_cast<std::shared_ptr<list_folder>> (*this) -> vars = vars;
@@ -105,8 +119,9 @@ presets::expander_folder::expander_folder(Glib::RefPtr<Gtk::Builder> b, std::sha
 
 presets::expander_blacklist::expander_blacklist(Glib::RefPtr<Gtk::Builder> b, std::shared_ptr<variables> vars,
 		std::string label_add, std::string label_remove, 
-		std::string label_name, std::string label_name_store): 
-			std::shared_ptr<expander>	(new expander(b, label_add, label_remove)), 
+		std::string label_name, std::string label_name_store,
+		std::string label, std::string number): 
+			std::shared_ptr<expander>	(new expander(b, label_add, label_remove, label, number)),
 			std::shared_ptr<list_blacklist>(new list_blacklist(b, label_name, label_name_store)){
 	printf("%s: %i\n", __PRETTY_FUNCTION__, __LINE__);
 	static_cast<std::shared_ptr<list_blacklist>> (*this) -> vars = vars;
@@ -137,6 +152,21 @@ presets::expander_blacklist::expander_blacklist(Glib::RefPtr<Gtk::Builder> b, st
 	// this -> expander::add -> signal_clicked().connect(on_add);
 	// this -> expander::remove -> signal_clicked().connect(on_delete);
 	printf("%s: %i\n", __PRETTY_FUNCTION__, __LINE__);
+	}
+
+
+
+std::map<std::string, std::any> presets::get_elements(){
+	return std::map<std::string, std::any>({
+		{"move", 		move},
+		{"ignore", 		ignore},
+		{"remove", 		remove},
+		{"refresh", 	refresh},
+		
+		{"option", 		option_operation},
+		{"operations", 	operations},
+		{"temporary", 	temporary}
+		});
 	}
 
 

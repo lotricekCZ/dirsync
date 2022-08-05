@@ -469,6 +469,7 @@ as the name is changed.
                       <object class="GtkFileChooserButton">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <property name="action">select-folder</property>
                         <property name="title" translatable="yes"/>
                         <property name="width_chars">16</property>
                       </object>
@@ -513,7 +514,7 @@ as the name is changed.
                         <property name="vexpand">False</property>
                         <property name="resize_mode">immediate</property>
                         <child>
-                          <object class="GtkSearchEntry">
+                          <object class="GtkSearchEntry" id="folder_search">
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="primary_icon_name">edit-find-symbolic</property>
@@ -539,7 +540,7 @@ as the name is changed.
                             </child>
                           </object>
                           <packing>
-                            <property name="position">0</property>
+                            <property name="position">1</property>
                           </packing>
                         </child>
                         <child>
@@ -556,7 +557,7 @@ as the name is changed.
                             </child>
                           </object>
                           <packing>
-                            <property name="position">0</property>
+                            <property name="position">2</property>
                           </packing>
                         </child>
                       </object>
@@ -728,7 +729,7 @@ as the name is changed.
                             </child>
                           </object>
                           <packing>
-                            <property name="position">0</property>
+                            <property name="position">1</property>
                           </packing>
                         </child>
                         <child>
@@ -745,7 +746,7 @@ as the name is changed.
                             </child>
                           </object>
                           <packing>
-                            <property name="position">0</property>
+                            <property name="position">2</property>
                           </packing>
                         </child>
                       </object>
@@ -909,7 +910,6 @@ as the name is changed.
                               <object class="GtkCellRendererToggle" id="select"/>
                               <attributes>
                                 <attribute name="cell-background-rgba">5</attribute>
-                                <attribute name="active">1</attribute>
                               </attributes>
                             </child>
                           </object>
