@@ -605,7 +605,9 @@ as the name is changed.
                                   <object class="GtkTreeViewColumn" id="path_path">
                                     <property name="title" translatable="yes">cesta</property>
                                     <child>
-                                      <object class="GtkCellRendererText" id="folder"/>
+                                      <object class="GtkCellRendererText" id="folder">
+                                        <property name="ellipsize">start</property>
+                                      </object>
                                       <attributes>
                                         <attribute name="editable">0</attribute>
                                         <attribute name="text">2</attribute>
@@ -889,6 +891,7 @@ as the name is changed.
                 <property name="hexpand">True</property>
                 <property name="vexpand">True</property>
                 <property name="shadow_type">in</property>
+                <property name="max_content_height">640</property>
                 <property name="propagate_natural_width">True</property>
                 <property name="propagate_natural_height">True</property>
                 <child>
@@ -909,6 +912,7 @@ as the name is changed.
                             <child>
                               <object class="GtkCellRendererToggle" id="select"/>
                               <attributes>
+                                <attribute name="active">1</attribute>
                                 <attribute name="cell-background-rgba">5</attribute>
                               </attributes>
                             </child>

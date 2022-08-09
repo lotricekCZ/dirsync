@@ -48,3 +48,13 @@ void file_list::push_back(std::set<std::filesystem::path> paths){
 void file_list::push_back(){
 	this -> push_back(variable_table -> get_directories());
 	}
+
+
+
+
+void file_list::erase(std::vector<uint64_t> id){
+	for(uint64_t i: id)
+		for(uint32_t j = 0; j < this -> size(); j++)
+			if(i == this -> at(j).id)
+				this -> erase(this -> begin() + j--);
+	}

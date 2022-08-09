@@ -36,7 +36,7 @@ class presets {
 		Glib::RefPtr<Gtk::FileChooser> 	temporary;
 
 		view_column view_mode();
-		void set_functions();
+		void fill();
 		std::map<std::string, std::any> get_elements();
 		std::shared_ptr<variables> vars;
 
@@ -46,6 +46,7 @@ class presets {
 						std::string label_add, std::string label_remove, 
 						std::string label, std::string number);
 				expander() = default;
+				std::map<std::string, Glib::RefPtr<Gtk::Button>> get_buttons();
 				// Glib::RefPtr<Gtk::SearchEntry> search;
 				Glib::RefPtr<Gtk::Button> add;
 				Glib::RefPtr<Gtk::Button> remove;
@@ -59,6 +60,8 @@ class presets {
 					std::string label_add, std::string label_remove, 
 					std::string label_name, std::string label_name_store,
 					std::string label, std::string number);
+				std::map<std::string, Glib::RefPtr<Gtk::Button>> get_buttons();
+				void fill();
 				expander_folder() = default;
 				void set_variables(std::shared_ptr<variables> vars);
 			} e_folder;
@@ -70,6 +73,9 @@ class presets {
 					std::string label_name, std::string label_name_store,
 					std::string label, std::string number);
 				expander_blacklist() = default;
+				std::map<std::string, Glib::RefPtr<Gtk::Button>> get_buttons();
+				void fill();
+				void set_variables(std::shared_ptr<variables> vars);
 			} e_blacklist;
 	protected:
 		// std::pair<Glib::RefPtr<Gtk::Label>, Glib::RefPtr<Gtk::Label>> display_label;

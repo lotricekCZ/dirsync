@@ -1,10 +1,22 @@
 #include <iostream>
 #include <yaml-cpp/yaml.h>
 #include <argumentum/argparse.h>
+
+#include <gtkmm/application.h>
+#include <gtkmm/applicationwindow.h>
+#include <gtkmm/button.h>
+#include <gtkmm/label.h>
+#include <gtkmm/box.h>
+#include <gtkmm/builder.h>
+#include <gtkmm/builder.h>
+#include <glibmm/main.h>
+
 #include <climits>
 #include <numeric>
 #include <string>
 #include <vector>
+#include <type_traits>
+#include <typeinfo>
 #include <filesystem>
 #include <cstdio>
 #include <fstream>
@@ -12,21 +24,38 @@
 #include <memory>
 #include <optional>
 #include <set>
+#include <thread>
+#include <map>
+#include <cinttypes>
+
+
+
 
 #include "./yaml_worker/yaml_worker.hpp"
 #include "./variables/variables.hpp"
 #include "./found_file/found_file.hpp"
 #include "./file_list/file_list.hpp"
 
+#include "./gui/elements/double_text.hpp"
+#include "./gui/elements/list_operator.hpp"
+#include "./gui/elements/list_file.hpp"
+#include "./gui/elements/presets.hpp"
+#include "./gui/window/window.hpp"
 // using namespace argumentum;
 
 int main(int argc, char** argv){
 	// printf("%s: %i\n", __PRETTY_FUNCTION__, __LINE__);
+	auto app = Gtk::Application::create(
+		argc, argv, 
+		"org.gtkmm.example.sample"
+		);
+	
 	std::shared_ptr<variables> variable_table(new variables());
+	std::shared_ptr<file_list> files(new file_list());
 	yaml_worker worker("../settings.yaml");
-	file_list files;
+	// file_list files;
 
-	worker.variable_table = files.variable_table = variable_table;
+	worker.variable_table = files -> variable_table = variable_table;
 	worker.read();
 	
 	
@@ -72,11 +101,13 @@ int main(int argc, char** argv){
 	worker.write();
 
 	found_file::significant = &variable_table -> significant;
-	files.push_back();
-	
-	for(auto o: files)
+	files -> push_back();
+	// printf(": %i\n", vars -> dir_list -> size());
+	window hw(variable_table, files);
+	hw.fill();
+	for(auto o: *files)
 		std::cout << o.print() << std::endl;
-	printf("\nsamostatnych souboru: %i\n", files.size());
+	printf("\nsamostatnych souboru: %i\n", files -> size());
 
-	return 0;
+	return app->run(hw);
 	}

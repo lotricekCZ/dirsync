@@ -26,8 +26,9 @@ class list_blacklist: public std::shared_ptr<list_operator>,
 		virtual ~list_blacklist() = default;
 		void add(std::string& f);
 		Gtk::TreeModel::iterator add();
-		void clear();
 		std::vector<bool> get_checked();
+		void start();
+		void clear();
 		void clear_selected();
 		// void remove(std::string& f);
 

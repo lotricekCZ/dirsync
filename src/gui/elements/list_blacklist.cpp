@@ -77,6 +77,18 @@ void list_blacklist::clear(){
 
 
 
+void list_blacklist::start(){
+	printf("%s: %i\n", __PRETTY_FUNCTION__, __LINE__);
+	printf(": %i\n", vars -> get_blacklist().size());
+	
+	for(auto i: vars -> get_blacklist()){
+		add(i);
+		}
+	printf("%s: %i\n", __PRETTY_FUNCTION__, __LINE__);
+	}
+
+
+
 void list_blacklist::clear_selected(){
 	// auto selected = get_checked();
 	// auto total = vars -> get_blacklist();
@@ -92,10 +104,13 @@ void list_blacklist::clear_selected(){
 													(*this)) -> children();
 	printf("%s: %i\n", __PRETTY_FUNCTION__, __LINE__);
 	uint32_t i = 0;
+	bool erased = 0;
 	if(children.size()){
 		auto selected = get_checked();
-		for(Gtk::TreeModel::iterator row = children.begin(); row != children.end(); row++){
+		for(Gtk::TreeModel::iterator row = children.begin(); row != children.end(); (erased? row: row++)){
+			erased = false;
 			if(selected.at(i++)){
+				erased = true;
 				printf("%s: %i\n", __PRETTY_FUNCTION__, __LINE__);
 				Glib::ustring us = (*row)[static_cast<std::shared_ptr<blacklist_column>>(*this) -> name];
 				printf("%s: %i\n", __PRETTY_FUNCTION__, __LINE__);

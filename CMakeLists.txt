@@ -89,13 +89,43 @@ add_library(yaml_worker 	SHARED ${CMAKE_CURRENT_SOURCE_DIR}/src/yaml_worker/yaml
 add_library(variables 		SHARED ${CMAKE_CURRENT_SOURCE_DIR}/src/variables/variables.cpp)
 add_library(found_file 		SHARED ${CMAKE_CURRENT_SOURCE_DIR}/src/found_file/found_file.cpp)
 add_library(file_list 		SHARED ${CMAKE_CURRENT_SOURCE_DIR}/src/file_list/file_list.cpp)
+
 add_library(double_text		SHARED ${CMAKE_CURRENT_SOURCE_DIR}/src/gui/elements/double_text.cpp)
 add_library(list_folder		SHARED ${CMAKE_CURRENT_SOURCE_DIR}/src/gui/elements/list_folder.cpp)
+
+add_library(blacklist_mc	SHARED ${CMAKE_CURRENT_SOURCE_DIR}/src/gui/elements/blacklist_model_column.cpp)
+add_library(view_mc			SHARED ${CMAKE_CURRENT_SOURCE_DIR}/src/gui/elements/view_model_column.cpp)
+add_library(file_mc			SHARED ${CMAKE_CURRENT_SOURCE_DIR}/src/gui/elements/file_model_column.cpp)
+add_library(folder_mc		SHARED ${CMAKE_CURRENT_SOURCE_DIR}/src/gui/elements/folder_model_column.cpp)
+
+add_library(list_operator	SHARED ${CMAKE_CURRENT_SOURCE_DIR}/src/gui/elements/list_operator.cpp)
+
+add_library(list_blacklist	SHARED ${CMAKE_CURRENT_SOURCE_DIR}/src/gui/elements/list_blacklist.cpp)
+add_library(list_file		SHARED ${CMAKE_CURRENT_SOURCE_DIR}/src/gui/elements/list_file.cpp)
+
+add_library(presets			SHARED ${CMAKE_CURRENT_SOURCE_DIR}/src/gui/elements/presets.cpp)
+add_library(window			SHARED ${CMAKE_CURRENT_SOURCE_DIR}/src/gui/window/window.cpp)
 
 # Current building machine requires -lstdc++fs to be linked to any library that operates with filesystem
 target_link_libraries(yaml_worker variables ${YAML_CPP_LIBRARIES} ${DIRSYNC_LIBRARIES} stdc++fs)
 target_link_libraries(file_list found_file)
-target_link_libraries(double_text ${GTKMM3_LIBRARIES})
+
+# GTK-dependant libs
+target_link_libraries(double_text 		${GTK3_LIBRARIES})
+target_link_libraries(presets	 		list_blacklist list_folder ${GTK3_LIBRARIES})
+
+target_link_libraries(blacklist_mc		${GTK3_LIBRARIES})
+target_link_libraries(view_mc			${GTK3_LIBRARIES})
+target_link_libraries(file_mc			${GTK3_LIBRARIES})
+target_link_libraries(folder_mc			${GTK3_LIBRARIES})
+
+target_link_libraries(list_operator		${GTK3_LIBRARIES})
+target_link_libraries(list_file 		list_operator ${GTK3_LIBRARIES})
+target_link_libraries(list_folder 		list_operator -lstdc++fs ${GTK3_LIBRARIES})
+target_link_libraries(list_blacklist	${GTK3_LIBRARIES})
+target_link_libraries(found_file 		-lstdc++fs)
+target_link_libraries(file_list 		found_file -lstdc++fs)
+target_link_libraries(window 			list_file list_folder yaml_worker presets double_text found_file -lstdc++fs)
 
 target_compile_features(dirsync PRIVATE cxx_std_17)
 # link_directories(${OpenCV_LIB_DIR})
@@ -104,4 +134,7 @@ target_compile_features(dirsync PRIVATE cxx_std_17)
 
 target_link_libraries(dirsync 
 			Threads::Threads ${YAML_CPP_LIBRARIES} ${ARGUMENTUM_INTERNAL_NAME}
-			yaml_worker variables found_file file_list list_folder ${GTKMM3_LIBRARIES})
+			yaml_worker variables found_file file_list list_folder 
+			blacklist_mc view_mc file_mc folder_mc list_operator list_file
+			list_folder list_blacklist found_file file_list window presets
+			${GTKMM3_LIBRARIES})

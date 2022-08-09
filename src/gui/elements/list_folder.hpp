@@ -29,6 +29,7 @@ class list_folder: public std::shared_ptr<list_operator>,
 		std::optional<Gtk::TreeModel::iterator> add();
 		void clear();
 		void print();
+		void start();
 		std::vector<bool> get_checked();
 		void clear_selected();
 		// void remove(std::filesystem::path& f);

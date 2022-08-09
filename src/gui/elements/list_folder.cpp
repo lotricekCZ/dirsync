@@ -91,6 +91,27 @@ void list_folder::clear(){
 
 
 
+void list_folder::start(){
+	printf("%s: %i\n", __PRETTY_FUNCTION__, __LINE__);
+	printf(": %i\n", vars -> get_directories().size());
+	
+	for(auto i: vars -> get_directories()){
+		printf("%s: %i\n", __PRETTY_FUNCTION__, __LINE__);
+		Gtk::TreeModel::iterator o 
+				= (static_cast<std::shared_ptr<list_operator>>(*this) -> add_row());
+		(*o)[static_cast<std::shared_ptr<folder_column>>(*this) -> selected] 
+			= 0;
+		(*o)[static_cast<std::shared_ptr<folder_column>>(*this) -> editable] 
+			= edited  
+			= 0;
+		(*o)[static_cast<std::shared_ptr<folder_column>>(*this) -> name] 
+			= i.string();
+		}
+	printf("%s: %i\n", __PRETTY_FUNCTION__, __LINE__);
+	}
+
+
+
 void list_folder::print(){
 	std::vector<std::filesystem::path> p;
 	printf("%s: %i\n", __PRETTY_FUNCTION__, __LINE__);
@@ -120,11 +141,14 @@ void list_folder::clear_selected(){
 													(*this)) -> children();
 	printf("%s: %i\n", __PRETTY_FUNCTION__, __LINE__);
 	uint32_t i = 0;
+	bool erased = 0;
 	if(children.size()){
 		auto selected = get_checked();
-		for(Gtk::TreeModel::iterator row = children.begin(); row != children.end(); row++){
+		for(Gtk::TreeModel::iterator row = children.begin(); row != children.end(); (erased? row: row++)){
+			erased = false;
 			if(selected.at(i++)){
-				printf("%s: %i\n", __PRETTY_FUNCTION__, __LINE__);
+				erased = true;
+				printf("%s: %i %i\n", __PRETTY_FUNCTION__, children.size(), __LINE__);
 				Glib::ustring us = (*row)[static_cast<std::shared_ptr<folder_column>>(*this) -> name];
 				printf("%s: %i\n", __PRETTY_FUNCTION__, __LINE__);
 				row = static_cast<std::shared_ptr<list_operator>> (*this) -> erase(row);
@@ -133,6 +157,7 @@ void list_folder::clear_selected(){
 					edited = false;
 					break;
 					}
+				// row = children.begin();
 				}
 			}
 		}
