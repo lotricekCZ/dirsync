@@ -40,6 +40,11 @@ class found_file {
 			return rhs.stem().string().substr(0, *significant) 
 				== get_stem().string().substr(0, *significant);
 			}
+		bool operator == (found_file rhs){
+			// std::cout << ((rhs.filename().string().substr(0, *significant) == get_filename().string().substr(0, *significant))? "je stejne": "neni stejne") << std::endl;
+			return rhs.get_filename().stem().string().substr(0, *significant) 
+				== get_stem().string().substr(0, *significant);
+			}
 	};
 
 uint16_t * found_file::significant;

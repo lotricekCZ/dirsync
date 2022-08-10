@@ -101,18 +101,11 @@ void window::list_file_window::connect_event(std::shared_ptr<presets> pres, std:
 
 	auto save_and_reload = [this, _pres, _vars, _files, _list, _worker](){
 		printf("\n\n\n\033[91mPinged\033[0m\n\n\n");
-		// std::this_thread::sleep_for(std::chrono::milliseconds(3000));
-		for(auto o: _vars -> get_directories())
-			std::cout << o.string() << std::endl;
-		for(auto o: *_vars -> dir_list)
-			std::cout << o.string() << std::endl;
-		printf("%s: %i\n", __PRETTY_FUNCTION__, __LINE__);
 		printf("SIZE 2: %i\n", _vars -> dir_list -> size());
 		_worker -> write();
-		for(auto o: _vars -> get_directories())
-			std::cout << o.string() << std::endl;
-		for(auto o: *_vars -> dir_list)
-			std::cout << o.string() << std::endl;
+		_files -> update();
+		_list -> clear();
+		draw();
 		printf("%s: %i\n", __PRETTY_FUNCTION__, __LINE__);
 		};
 

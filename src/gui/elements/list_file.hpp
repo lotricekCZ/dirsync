@@ -31,6 +31,7 @@ class list_file: public std::shared_ptr<list_operator>, std::shared_ptr<file_col
 		std::optional<Gtk::TreeModel::iterator> get_iter(uint32_t id);
 		std::vector<bool> get_checked();
 		std::vector<uint64_t> clear_selected();
+		void clear();
 	protected:
 		//Member widgets:
 	};

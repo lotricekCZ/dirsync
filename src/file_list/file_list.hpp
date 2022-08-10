@@ -40,6 +40,7 @@ class file_list: public std::vector<found_file> {
 		std::vector<uint64_t> erased;
 		file_list();
 		void print();
+		void update();
 		std::vector<uint64_t> get_erased();
 		std::vector<uint64_t> get_indexes(std::vector<uint64_t> id);
 		void erase(std::vector<uint64_t> id);

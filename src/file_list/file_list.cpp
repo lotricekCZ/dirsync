@@ -52,6 +52,23 @@ void file_list::push_back(){
 
 
 
+void file_list::update(){
+	// std::vector<found_file> tmp = *this;
+	this -> clear();
+	this -> push_back();
+	// while(tmp.size()){
+	// 	for(auto a = this -> begin(); a != this -> end(); a++)
+	// 		if(*a == tmp.back()){
+	// 			a -> id = tmp.back().id;
+	// 			break;
+	// 			}
+	// 	tmp.pop_back();
+	// 	}
+	}
+
+
+
+
 void file_list::erase(std::vector<uint64_t> id){
 	for(uint64_t i: id)
 		for(uint32_t j = 0; j < this -> size(); j++)

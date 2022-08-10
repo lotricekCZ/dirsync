@@ -160,6 +160,12 @@ std::vector<uint64_t> list_file::clear_selected(){
 
 
 
+void list_file::clear(){
+	static_cast<std::shared_ptr<list_operator>>(*this) -> clear();
+	}
+
+
+
 std::vector<bool> list_file::get_checked(){
 	// static_cast<std::shared_ptr<list_operator>> (*this) -> clear();
 	std::vector<bool> ret;
