@@ -37,9 +37,11 @@ class file_list: public std::vector<found_file> {
 		using std::vector<found_file>::insert;
 		using std::vector<found_file>::iterator;
 		using std::vector<found_file>::erase;
-		
+		std::vector<uint64_t> erased;
 		file_list();
 		void print();
+		std::vector<uint64_t> get_erased();
+		std::vector<uint64_t> get_indexes(std::vector<uint64_t> id);
 		void erase(std::vector<uint64_t> id);
 		void push_back(std::filesystem::path);
 		void push_back(std::set<std::filesystem::path>);

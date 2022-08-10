@@ -57,7 +57,8 @@ Gtk::TreeModel::iterator list_blacklist::add(){
 				p.emplace_back(s.c_str());
 			}
 		
-		vars -> insert_blacklist(p);
+		vars -> whitelist -> insert(vars -> whitelist -> end(), p.begin(), p.end());
+		vars -> operation = 0; // insert 0 or remove 1
 		}
 	Gtk::TreeModel::iterator o 
 		= (static_cast<std::shared_ptr<list_operator>>(*this) -> add_row());
@@ -125,8 +126,9 @@ void list_blacklist::clear_selected(){
 		}
 	for(auto a: removed)
 		printf("removing %s\n", a.c_str());
-	vars -> remove_blacklist(removed);
-
+	// vars -> remove_blacklist(removed);
+	vars -> whitelist -> insert(vars -> whitelist -> end(), removed.begin(), removed.end());
+	vars -> operation = 1; // insert 0 or remove 1
 	}
 
 

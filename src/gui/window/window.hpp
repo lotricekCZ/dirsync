@@ -27,7 +27,9 @@
 class window: public Gtk::ApplicationWindow {
 		class list_file_window {
 			public:
-				list_file_window(Glib::RefPtr<Gtk::Builder> b, std::map<std::string, std::string> in, std::shared_ptr<file_list> back);
+				list_file_window(Glib::RefPtr<Gtk::Builder> b, 
+								std::map<std::string, std::string> in, 
+								std::shared_ptr<file_list> back);
 				std::map<std::string, std::any> elements = {
 					{"list", 				std::shared_ptr<list_file>()},
 					{"selected",			std::shared_ptr<double_text>()},
@@ -38,7 +40,7 @@ class window: public Gtk::ApplicationWindow {
 					};
 				
 				void set_variables(std::shared_ptr<variables> vars);
-				void connect_event(std::shared_ptr<presets> pres);
+				void connect_event(std::shared_ptr<presets> pres, std::shared_ptr<yaml_worker> worker);
 				void draw();
 				void clear();
 			};
@@ -52,6 +54,7 @@ class window: public Gtk::ApplicationWindow {
 			{"ignore",				"button_ignore"},
 			{"remove",				"button_delete"},
 			{"refresh",				"button_refresh"},
+			{"temporary",			"temporary_chooser"},
 
 			{"folder_add",			"folder_add"}, 
 			{"folder_remove",		"folder_remove"}, 
@@ -87,14 +90,16 @@ class window: public Gtk::ApplicationWindow {
 			{"presets", 			std::shared_ptr<presets>()},
 			{"files", 				std::shared_ptr<list_file_window>()}
 			};
+
 		bool on_timeout();
+		bool check_changes();
 	public:
 		std::shared_ptr<variables> variable_table;
 		std::shared_ptr<yaml_worker> worker;
 		// presets pres;
 		void fill();
 		void start();
-		window(std::shared_ptr<variables> vars, std::shared_ptr<file_list> back);
+		window(std::shared_ptr<variables> vars, std::shared_ptr<file_list> back, std::shared_ptr<yaml_worker> work);
 		
 	};
 

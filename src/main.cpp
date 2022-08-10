@@ -52,11 +52,11 @@ int main(int argc, char** argv){
 	
 	std::shared_ptr<variables> variable_table(new variables());
 	std::shared_ptr<file_list> files(new file_list());
-	yaml_worker worker("../settings.yaml");
+	std::shared_ptr<yaml_worker> worker(new yaml_worker("../settings.yaml"));
 	// file_list files;
 
-	worker.variable_table = files -> variable_table = variable_table;
-	worker.read();
+	worker -> variable_table = files -> variable_table = variable_table;
+	worker -> read();
 	
 	
 	for(auto i : variable_table -> get_blacklist())
@@ -65,7 +65,7 @@ int main(int argc, char** argv){
 		
 
 	auto parser = argumentum::argument_parser{};
-	parser.config().program(argv[0]).description("Accumulator");
+	parser.config().program(argv[0]).description("diesync");
 	auto params = parser.params();
 	// params.add_parameter(numbers, "N").minargs(1).metavar("INT").help("Integers");
 	// params.add_parameter(isSum, "--sum", "-s")
@@ -98,12 +98,12 @@ int main(int argc, char** argv){
 	parser.parse_args(argc, argv, 1);
 	// if(!parser.parse_args(argc, argv, 1))
 	// 	return 1;
-	worker.write();
+	worker -> write();
 
 	found_file::significant = &variable_table -> significant;
 	files -> push_back();
 	// printf(": %i\n", vars -> dir_list -> size());
-	window hw(variable_table, files);
+	window hw(variable_table, files, worker);
 	hw.fill();
 	for(auto o: *files)
 		std::cout << o.print() << std::endl;

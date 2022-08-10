@@ -122,7 +122,7 @@ std::optional<Gtk::TreeModel::iterator> list_file::get_iter(uint32_t id){
 
 
 
-void list_file::clear_selected(){
+std::vector<uint64_t> list_file::clear_selected(){
 	printf("%s: %i\n", __PRETTY_FUNCTION__, __LINE__);
 	std::vector<uint64_t> removed;
 	printf("%s: %i\n", __PRETTY_FUNCTION__, __LINE__);
@@ -144,7 +144,7 @@ void list_file::clear_selected(){
 				uint64_t us = (*row)[static_cast<std::shared_ptr<file_column>>(*this) -> id];
 				printf("%s: %i\n", __PRETTY_FUNCTION__, __LINE__);
 				row = static_cast<std::shared_ptr<list_operator>> (*this) -> erase(row);
-				if(!us) removed.emplace_back(us);
+				if(us) removed.emplace_back(us);
 				if(row == children.end()) { // last element removed, nothing to edit
 					// edited = false;
 					break;
@@ -155,7 +155,7 @@ void list_file::clear_selected(){
 		}
 	for(auto a: removed)
 		printf("removing %i\n", a);
-	real_files -> erase(removed);
+	return removed; // this will pass list to a function that MUST decide what to do with this information
 	}
 
 

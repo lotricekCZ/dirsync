@@ -8,10 +8,12 @@ presets::presets(Glib::RefPtr<Gtk::Builder> b, std::map<std::string, std::string
 	option_operation 	= Glib::RefPtr<Gtk::ComboBox>::cast_dynamic(b -> get_object(name["combobox"]));
 	operations			= Glib::RefPtr<Gtk::ListStore>::cast_dynamic(b -> get_object(name["combo_list"]));
 	printf("%s: %i\n", __PRETTY_FUNCTION__, __LINE__);
-	move	 = Glib::RefPtr<Gtk::Button>::cast_dynamic(b -> get_object(name["move"]));
-	ignore	 = Glib::RefPtr<Gtk::Button>::cast_dynamic(b -> get_object(name["ignore"]));
-	remove	 = Glib::RefPtr<Gtk::Button>::cast_dynamic(b -> get_object(name["remove"]));
-	refresh	 = Glib::RefPtr<Gtk::Button>::cast_dynamic(b -> get_object(name["refresh"]));
+	move		 = Glib::RefPtr<Gtk::Button>::cast_dynamic(b -> get_object(name["move"]));
+	ignore		 = Glib::RefPtr<Gtk::Button>::cast_dynamic(b -> get_object(name["ignore"]));
+	remove		 = Glib::RefPtr<Gtk::Button>::cast_dynamic(b -> get_object(name["remove"]));
+	refresh		 = Glib::RefPtr<Gtk::Button>::cast_dynamic(b -> get_object(name["refresh"]));
+	
+	temporary	 = Glib::RefPtr<Gtk::FileChooserButton>::cast_dynamic(b -> get_object(name["temporary"]));
 	// set_functions();
 	vars = v;
 
@@ -35,8 +37,15 @@ presets::presets(Glib::RefPtr<Gtk::Builder> b, std::map<std::string, std::string
 			name["blacklist_add"], name["blacklist_remove"], 
 			name["blacklist_view"], name["blacklist_store"], 
 			name["label_blacklist"], name["blacklist"]);
+	auto _temp = temporary;
+	auto _var = vars;
 
+	auto temporary_choosed = [this, _temp, _var](){
+		// printf("\n\n\n\033[91mPinged\033[0m\n%s\n\n", temp -> get_filename().c_str());
+		_var -> set_temporary(_temp -> get_filename());
+		};
 	
+
 	printf("%s: %i\n", __PRETTY_FUNCTION__, __LINE__);
 	operations -> set_column_types(view_column());
 	printf("%s: %i\n", __PRETTY_FUNCTION__, __LINE__);
@@ -54,6 +63,7 @@ presets::presets(Glib::RefPtr<Gtk::Builder> b, std::map<std::string, std::string
 	printf("%s: %i\n", __PRETTY_FUNCTION__, __LINE__);
 
 	option_operation -> signal_changed().connect(on_change);
+	temporary -> signal_file_set().connect(temporary_choosed);
 	}
 
 
@@ -208,6 +218,8 @@ std::map<std::string, std::any> presets::get_elements(){
 		{"refresh", 	refresh},
 		
 		{"option", 		option_operation},
+		{"folders", 	e_folder},
+		{"blacklist", 	e_blacklist},
 		{"operations", 	operations},
 		{"temporary", 	temporary}
 		});

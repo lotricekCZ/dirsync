@@ -98,8 +98,11 @@ bool variables::insert_blacklist(std::vector<std::string> list){
 
 
 bool variables::update_blacklist(){
-	if(whitelist)
-		return ((operation)? remove_blacklist(*whitelist): insert_blacklist(*whitelist));
+	if(whitelist || whitelist -> size() != 0){
+		auto tmp = *whitelist;
+	 	whitelist -> clear();
+		return ((operation)? remove_blacklist(tmp): insert_blacklist(tmp));
+		}
 	whitelist.reset();
 	return false;
 	}
@@ -107,8 +110,11 @@ bool variables::update_blacklist(){
 
 
 bool variables::update_directory(){
-	if(dir_list)
-		return ((operation)? remove_directory(*dir_list): insert_directory(*dir_list));
+	if(dir_list.has_value() || dir_list -> size() != 0){
+		auto tmp = *dir_list;
+		dir_list -> clear();
+		return ((operation)? remove_directory(tmp): insert_directory(tmp));
+		}
 	dir_list.reset();
 	return false;
 	}
@@ -144,3 +150,24 @@ void variables::set_view_mode(uint8_t v){
 	view_mode = (mode)v;
 	}
 
+
+
+void variables::set_temporary(std::filesystem::path tmp){
+	this -> temporary = tmp;
+	}
+
+
+
+void variables::set_temporary(std::string tmp){
+	set_temporary(std::filesystem::path(tmp));
+	}
+
+
+
+std::filesystem::path variables::get_temporary(){
+	return temporary;	
+	}
+
+
+
+		

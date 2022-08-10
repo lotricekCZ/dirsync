@@ -7,24 +7,31 @@ list_folder::list_folder(Glib::RefPtr<Gtk::Builder>& b, std::string label_name, 
 	std::shared_ptr<list_operator>(new list_operator(b, label_name, label_name_store)),
 	std::shared_ptr<folder_column>(new folder_column()) {
 	
+	printf("%s: %i\n", __PRETTY_FUNCTION__, __LINE__);
+
 	static_cast<std::shared_ptr<list_operator>> (*this) -> clear();
+	printf("%s: %i\n", __PRETTY_FUNCTION__, __LINE__);
 	static_cast<std::shared_ptr<list_operator>> (*this) 
 		-> set_column_types(*static_cast<std::shared_ptr<folder_column>>(*this));
+	printf("%s: %i\n", __PRETTY_FUNCTION__, __LINE__);
 	static_cast<std::shared_ptr<list_operator>> (*this) 
 		-> set_model(
 			static_cast<Glib::RefPtr<Gtk::ListStore>>
 				(*static_cast<std::shared_ptr<list_operator>>
-					(*this))	
+					(*this))
 			);
+	printf("%s: %i\n", __PRETTY_FUNCTION__, __LINE__);
 	auto l_op = static_cast<std::shared_ptr<list_operator>> (*this); 
 	auto fc = static_cast<std::shared_ptr<folder_column>> (*this);
 	auto on_toggle = [this, fc, l_op, b] (const Glib::ustring& path){
 		auto iter = l_op -> get_iter(path);
 		(*iter)[fc -> selected] = !(*iter)[fc -> selected];
 		};
-
+	printf("%s: %i\n", __PRETTY_FUNCTION__, __LINE__);
 	Glib::RefPtr<Gtk::CellRendererToggle>::cast_dynamic(b -> get_object("folder_select")) -> signal_toggled()
 		.connect(on_toggle);
+	
+	printf("%s: %i\n", __PRETTY_FUNCTION__, __LINE__);
 	}
 
 
@@ -55,17 +62,28 @@ std::optional<Gtk::TreeModel::iterator> list_folder::add(){
 		Glib::ustring s;
 		for(Gtk::TreeModel::iterator row = o.begin(); row != o.end(); ++row){
 			s = ((*row)[static_cast<std::shared_ptr<folder_column>>(*this) -> name]);
-			if(std::filesystem::exists(std::filesystem::path(s.c_str())))
+			if(std::filesystem::exists(std::filesystem::path(s.c_str()))){
 				p.emplace_back(s.c_str());
 				}
+			}
 		printf("%s: %i\n", __PRETTY_FUNCTION__, __LINE__);
 		((o)[o.size() - 1])[static_cast<std::shared_ptr<folder_column>>(*this) -> editable] 
 			= edited  
 			= 0;
+		printf("%s: %i\n", __PRETTY_FUNCTION__, __LINE__);
+		if(!vars)
+			printf("%s: %i\n", __PRETTY_FUNCTION__, __LINE__);
 		if(vars -> insert_directory(p)) { // if the new entry is valid
+			vars -> remove_directory(p);
+			*vars -> dir_list  = p;
+			printf("SIZE: %i\n", vars -> dir_list -> size());
+			vars -> operation = 0; // insert 0 or remove 1
+			vars -> block = 0; // insert 0 or remove 1
 			return ((o)[o.size() - 1]);
 			}
+		printf("%s: %i\n", __PRETTY_FUNCTION__, __LINE__);
 		static_cast<std::shared_ptr<list_operator>> (*this) -> erase(((o)[o.size() - 1]));
+		// exit(1);
 		return std::nullopt;
 
 		} else {
@@ -80,6 +98,7 @@ std::optional<Gtk::TreeModel::iterator> list_folder::add(){
 			printf("%s: %i\n", __PRETTY_FUNCTION__, __LINE__);
 			return o;
 			}
+	vars -> block = 0; // insert 0 or remove 1
 	printf("%s: %i\n", __PRETTY_FUNCTION__, __LINE__);
 	}
 
@@ -164,6 +183,9 @@ void list_folder::clear_selected(){
 	for(auto a: removed)
 		printf("removing %s\n", a.c_str());
 	vars -> remove_directory(removed);
+	vars -> dir_list -> insert(vars -> dir_list -> end(), removed.begin(), removed.end());
+	vars -> operation = 1; // insert 0 or remove 1
+	vars -> block = 0; // insert 0 or remove 1
 	}
 
 

@@ -14,15 +14,22 @@ class found_file {
 		uint64_t id = 0; // invisible id that tells me if found_file is listed
 		std::filesystem::path filename;
 		// occurences throughout all the dirs with 
-		std::set<std::pair<bool, std::filesystem::path>> occurences;
+		struct file_pair {
+			mutable bool first = 0;
+			std::filesystem::path second;
+			bool operator < (const file_pair& other) const {
+				return second < other.second;
+				}
+			};
+		std::set<file_pair> occurences;
 		uint16_t get_occurence_count();
 		std::filesystem::path get_filename();
 		std::filesystem::path get_stem();
-		
 		found_file(std::filesystem::path);
 		found_file(std::string);
 		bool insert(std::filesystem::path);
 		bool emplace(std::string);
+		void tick_all();
 		std::string print();
 		// using std::filesystem::path::extension();
 		// using std::filesystem::path::string();

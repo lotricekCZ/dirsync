@@ -55,6 +55,23 @@ void file_list::push_back(){
 void file_list::erase(std::vector<uint64_t> id){
 	for(uint64_t i: id)
 		for(uint32_t j = 0; j < this -> size(); j++)
-			if(i == this -> at(j).id)
+			if(i == this -> at(j).id){
+
 				this -> erase(this -> begin() + j--);
+				}
+	// erased.insert(erased.end(), id.begin(), id.end()); // this is here to pull
+	}
+
+
+
+std::vector<uint64_t> file_list::get_indexes(std::vector<uint64_t> id){
+	std::vector<uint64_t> ret;
+	for(uint64_t i: id)
+		for(uint32_t j = 0; j < this -> size(); j++)
+			if(i == this -> at(j).id){
+				ret.push_back(j);
+				}
+	// erased.insert(erased.end(), id.begin(), id.end()); // this is here to pull
+	std::sort(ret.begin(), ret.end());
+	return ret;
 	}

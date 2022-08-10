@@ -466,7 +466,7 @@ as the name is changed.
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkFileChooserButton">
+                      <object class="GtkFileChooserButton" id="temporary_chooser">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="action">select-folder</property>

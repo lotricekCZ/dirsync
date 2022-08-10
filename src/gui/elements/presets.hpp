@@ -13,7 +13,7 @@
 #include <gtkmm/label.h>
 #include <gtkmm/builder.h>
 #include <gtkmm/combobox.h>
-#include <gtkmm/filechooser.h>
+#include <gtkmm/filechooserbutton.h>
 #include <string>
 #include <map>
 #include <any>
@@ -33,13 +33,13 @@ class presets {
 
 		Glib::RefPtr<Gtk::ComboBox> 	option_operation;
 		Glib::RefPtr<Gtk::ListStore>	operations;
-		Glib::RefPtr<Gtk::FileChooser> 	temporary;
+		Glib::RefPtr<Gtk::FileChooserButton> 	temporary;
 
 		view_column view_mode();
 		void fill();
 		std::map<std::string, std::any> get_elements();
 		std::shared_ptr<variables> vars;
-
+		
 		class expander {
 			public:
 				expander(Glib::RefPtr<Gtk::Builder> b, 

@@ -7,8 +7,9 @@ list_operator::list_operator(Glib::RefPtr<Gtk::Builder> b, std::string label_nam
 	Glib::RefPtr<Gtk::TreeView>(Glib::RefPtr<Gtk::TreeView>::cast_dynamic(b -> get_object(label_name))), 
 	Glib::RefPtr<Gtk::ListStore>(Glib::RefPtr<Gtk::ListStore>::cast_dynamic(b -> get_object(label_name_store))) {
 	// if(!(b)) printf("%s: %i\n", __PRETTY_FUNCTION__, __LINE__);
-	// if(!(static_cast<Glib::RefPtr<Gtk::ListStore>>(*this))) printf("%s: %i\n", __PRETTY_FUNCTION__, __LINE__);
-	// if(!(Glib::RefPtr<Gtk::TreeView>::cast_dynamic(b -> get_object(label_name)))) printf("%s: %i\n", __PRETTY_FUNCTION__, __LINE__);
+	if(!(static_cast<Glib::RefPtr<Gtk::TreeView>>(*this))) printf("%s: %i\n", __PRETTY_FUNCTION__, __LINE__);
+	if(!(static_cast<Glib::RefPtr<Gtk::ListStore>>(*this))) printf("%s: %i\n", __PRETTY_FUNCTION__, __LINE__);
+	if(!(Glib::RefPtr<Gtk::TreeView>::cast_dynamic(b -> get_object(label_name)))) printf("%s: %i\n", __PRETTY_FUNCTION__, __LINE__);
 	}
 
 
@@ -54,7 +55,9 @@ Gtk::TreeModel::Children list_operator::children(){
 
 
 void list_operator::set_model(const Glib::RefPtr<Gtk::TreeModel>& model){
+	printf("%s: %i\n", __PRETTY_FUNCTION__, __LINE__);
 	static_cast<Glib::RefPtr<Gtk::TreeView>>(*this) -> set_model(model);
+	printf("%s: %i\n", __PRETTY_FUNCTION__, __LINE__);
 	}
 
 

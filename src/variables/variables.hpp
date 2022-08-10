@@ -12,6 +12,7 @@
 class variables {
 	private:	
 		std::filesystem::path settings;
+		std::filesystem::path temporary;
 		std::set<std::filesystem::path> directories;
 		std::set<std::string> blacklist;
 		enum mode: uint8_t {
@@ -20,6 +21,7 @@ class variables {
 			all		 = 2
 			} view_mode;
 	public:
+		bool block = 1;
 		uint16_t significant;
 		std::optional<std::vector<std::string>> whitelist;
 		std::optional<std::vector<std::filesystem::path>> dir_list;
@@ -32,6 +34,10 @@ class variables {
 		uint16_t get_significant(); // returns sig or 1 if sig is 0
 		std::set<std::filesystem::path> get_directories();
 		std::set<std::string> get_blacklist();
+		
+		void set_temporary(std::filesystem::path);
+		void set_temporary(std::string);
+		std::filesystem::path get_temporary();
 		
 		uint8_t get_view_mode();
 		void set_view_mode(uint8_t);
@@ -52,6 +58,7 @@ class variables {
 
 		bool update_directory();
 		bool update_blacklist();
+
 	};
 
 
