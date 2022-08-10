@@ -5,6 +5,7 @@
 #include <vector>
 #include <filesystem>
 #include <memory>
+#include <numeric>
 #include "../found_file/found_file.hpp"
 #include "../variables/variables.hpp"
 
@@ -41,6 +42,7 @@ class file_list: public std::vector<found_file> {
 		file_list();
 		void print();
 		void update();
+		bool changed();
 		std::vector<uint64_t> get_erased();
 		std::vector<uint64_t> get_indexes(std::vector<uint64_t> id);
 		void erase(std::vector<uint64_t> id);

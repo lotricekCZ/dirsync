@@ -7,6 +7,7 @@
 #include <gtkmm/treemodelcolumn.h>
 #include <gtkmm/treemodel.h>
 #include <glib.h>
+#include <gdkmm/rgba.h>
 #include <string>
 
 class file_column : public Gtk::TreeModel::ColumnRecord{
@@ -18,7 +19,7 @@ class file_column : public Gtk::TreeModel::ColumnRecord{
 		Gtk::TreeModelColumn<Glib::ustring> 	name;
 		Gtk::TreeModelColumn<uint32_t>		 	number;
 		Gtk::TreeModelColumn<Glib::ustring> 	filetypes;
-		Gtk::TreeModelColumn<Glib::ustring> 	color;
+		Gtk::TreeModelColumn<Gdk::RGBA>		 	color;
 	};
 
 #endif // file_model_column

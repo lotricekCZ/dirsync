@@ -52,6 +52,31 @@ void file_list::push_back(){
 
 
 
+bool file_list::changed(){
+	uint32_t sum = 0;
+	for(auto i: *this)
+		sum += i.get_occurence_count();
+
+	uint32_t other_sum = 0;
+	for(auto i: variable_table -> get_directories())
+		for(auto const& o: std::filesystem::directory_iterator{i}){
+			bool ok = false;
+			for(auto extension: variable_table -> get_blacklist()){
+				if(extension == std::filesystem::path(o).extension().string()){
+					ok = true;
+					break;
+					}
+				}
+			if(ok) continue;
+			other_sum++;
+			}
+	printf("%i, %i\n", other_sum, sum);
+	return other_sum != sum;
+	}
+
+
+
+
 void file_list::update(){
 	// std::vector<found_file> tmp = *this;
 	this -> clear();

@@ -101,7 +101,6 @@ void window::list_file_window::connect_event(std::shared_ptr<presets> pres, std:
 
 	auto save_and_reload = [this, _pres, _vars, _files, _list, _worker](){
 		printf("\n\n\n\033[91mPinged\033[0m\n\n\n");
-		printf("SIZE 2: %i\n", _vars -> dir_list -> size());
 		_worker -> write();
 		_files -> update();
 		_list -> clear();
@@ -109,6 +108,18 @@ void window::list_file_window::connect_event(std::shared_ptr<presets> pres, std:
 		printf("%s: %i\n", __PRETTY_FUNCTION__, __LINE__);
 		};
 
+	auto changed = [this, _files, _list]() -> bool{
+		if(_files -> changed()){
+			_files -> update();
+			_list -> clear();
+			draw();
+			}
+		return true;
+		};
+
+	int timeout_value = 2500; // in ms (1.5 sec)
+	sigc::slot<bool> refresh = changed; // sigc::mem_fun(*this, &window::on_timeout);
+	Glib::signal_timeout().connect(changed, timeout_value);
 
 	auto get_selected = [this, _pres, _vars, _files, _list](){
 		printf("\n\n\n\033[91mPinged\033[0m\n\n\n");

@@ -82,7 +82,7 @@ void list_file::add(found_file& f){
 		= filetypes();
 	// printf("%s: %i\n", __PRETTY_FUNCTION__, __LINE__);
 	(**o)[static_cast<std::shared_ptr<file_column>>(*this) -> color]
-		= std::string("rgb(25, 10, 45)");
+		= Gdk::RGBA("rgba(60, 60, 60, 1)");
 	// printf("%s: %i\n", __PRETTY_FUNCTION__, __LINE__);
 	}
 
