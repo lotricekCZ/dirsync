@@ -7,7 +7,7 @@ bool variables::init(){
 
 
 bool variables::loop(){
-	return update_directory() | update_blacklist();
+	return update_directory() | update_blacklist() | update_temporary();
 	}
 
 
@@ -121,6 +121,16 @@ bool variables::update_directory(){
 
 
 
+bool variables::update_temporary(){
+	if(temporary_tmp.has_value() || temporary_tmp -> size() != 0){
+		temporary = *temporary_tmp;
+		}
+	temporary_tmp.reset();
+	return false;
+	}
+
+
+
 bool variables::remove_directory(std::vector<std::filesystem::path> dir){
 	bool removed = false;
 	auto p = std::filesystem::current_path();
@@ -152,14 +162,16 @@ void variables::set_view_mode(uint8_t v){
 
 
 
-void variables::set_temporary(std::filesystem::path tmp){
-	this -> temporary = tmp;
+void variables::set_temporary(std::filesystem::path tmp, bool force){
+	this -> temporary = ((std::filesystem::exists(tmp))? tmp: std::filesystem::temp_directory_path());
+	if(force)
+		this -> temporary_tmp = this -> temporary;
 	}
 
 
 
-void variables::set_temporary(std::string tmp){
-	set_temporary(std::filesystem::path(tmp));
+void variables::set_temporary(std::string tmp, bool force){
+	set_temporary(std::filesystem::path(tmp), force	);
 	}
 
 

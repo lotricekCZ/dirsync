@@ -16,7 +16,7 @@ presets::presets(Glib::RefPtr<Gtk::Builder> b, std::map<std::string, std::string
 	temporary	 = Glib::RefPtr<Gtk::FileChooserButton>::cast_dynamic(b -> get_object(name["temporary"]));
 	// set_functions();
 	vars = v;
-
+	temporary -> set_filename(v -> get_temporary());
 	auto contains = [](auto name, auto key){
 		return (name.find(key) != name.end());
 		};
@@ -42,7 +42,7 @@ presets::presets(Glib::RefPtr<Gtk::Builder> b, std::map<std::string, std::string
 
 	auto temporary_choosed = [this, _temp, _var](){
 		// printf("\n\n\n\033[91mPinged\033[0m\n%s\n\n", temp -> get_filename().c_str());
-		_var -> set_temporary(_temp -> get_filename());
+		_var -> set_temporary(_temp -> get_filename(), true);
 		};
 	
 

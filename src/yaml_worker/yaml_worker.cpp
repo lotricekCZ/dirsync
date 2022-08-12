@@ -15,6 +15,7 @@ void yaml_worker::read(){
 	variable_table -> set_significant(config["significant"].as<uint16_t>());
 	variable_table -> set_blacklist(config["blacklist"].as<std::vector<std::string>>());
 	variable_table -> set_directories(config["directories"].as<std::vector<std::string>>());
+	variable_table -> set_temporary(config["temporary"].as<std::string>());
 	}
 
 
@@ -38,6 +39,8 @@ void yaml_worker::write(){
 	out << YAML::Value << variable_table -> get_significant();
 	out << YAML::Key << "blacklist";
 	out << YAML::Value << variable_table -> get_blacklist();
+	out << YAML::Key << "temporary";
+	out << YAML::Value << variable_table -> get_temporary().string();
 	out << YAML::EndMap;
 	// a << config;
 	std::cout << out.c_str() << std::endl << std::endl;

@@ -93,19 +93,19 @@ void window::list_file_window::draw(){
 
 
 void window::list_file_window::connect_event(std::shared_ptr<presets> pres, std::shared_ptr<yaml_worker> worker){
-	auto _pres = pres;
+	auto _pres = 	pres;
 	auto _vars = 	std::any_cast<std::shared_ptr<variables>>(elements["variables"]);
 	auto _files = 	std::any_cast<std::shared_ptr<file_list>>(elements["backend"]);
 	auto _list = 	std::any_cast<std::shared_ptr<list_file>>(elements["list"]);
 	auto _worker = 	worker;
 
 	auto save_and_reload = [this, _pres, _vars, _files, _list, _worker](){
-		printf("\n\n\n\033[91mPinged\033[0m\n\n\n");
+		// printf("\n\n\n\033[91mPinged\033[0m\n\n\n");
 		_worker -> write();
 		_files -> update();
 		_list -> clear();
 		draw();
-		printf("%s: %i\n", __PRETTY_FUNCTION__, __LINE__);
+		// printf("%s: %i\n", __PRETTY_FUNCTION__, __LINE__);
 		};
 
 	auto changed = [this, _files, _list]() -> bool{
@@ -117,23 +117,21 @@ void window::list_file_window::connect_event(std::shared_ptr<presets> pres, std:
 		return true;
 		};
 
-	int timeout_value = 2500; // in ms (1.5 sec)
-	sigc::slot<bool> refresh = changed; // sigc::mem_fun(*this, &window::on_timeout);
-	Glib::signal_timeout().connect(changed, timeout_value);
 
 	auto get_selected = [this, _pres, _vars, _files, _list](){
-		printf("\n\n\n\033[91mPinged\033[0m\n\n\n");
+		// printf("\n\n\n\033[91mPinged\033[0m\n\n\n");
 		auto ids = _list -> clear_selected();
 		auto indexes = _files -> get_indexes(ids);
 
-		printf("\n\n\n\033[91mPinged\033[0m\n");
-		printf("\033[91mSIZE\t%i\033[0m\n\n\n", ids.size());
+		// printf("\n\n\n\033[91mPinged\033[0m\n");
+		// printf("\033[91mSIZE\t%i\033[0m\n\n\n", ids.size());
 		while(indexes.size()){
 			found_file f = _files -> at(indexes.back());
 			f.tick_all();
 			for(auto it = f.occurences.begin(); it != f.occurences.end(); it++) {
 				if(it -> first)
-					printf("MOVING %s to %s\n", it -> second.filename().c_str(), _vars -> get_temporary().c_str());
+					printf("MOVING %s to %s\nnew name: %s\n", it -> second.filename().c_str(), _vars -> get_temporary().c_str(),
+							(it -> second, _vars -> get_temporary()/(it -> second.filename())).c_str());
 					std::filesystem::rename(it -> second, _vars -> get_temporary()/(it -> second.filename()));	
 				}
 			// std::filesystem::rename()
@@ -142,6 +140,9 @@ void window::list_file_window::connect_event(std::shared_ptr<presets> pres, std:
 		};
 
 
+	int timeout_value = 1000; // in ms (2.5 sec)
+	sigc::slot<bool> refresh = changed; // sigc::mem_fun(*this, &window::on_timeout);
+	Glib::signal_timeout().connect(changed, timeout_value);
 
 	auto els_pres = pres -> get_elements();
 	auto bl = std::any_cast<presets::expander_blacklist>(els_pres["blacklist"]).get_buttons();
@@ -153,6 +154,7 @@ void window::list_file_window::connect_event(std::shared_ptr<presets> pres, std:
 
 	fd["add"] -> signal_clicked().connect(save_and_reload);
 	fd["remove"] -> signal_clicked().connect(save_and_reload);
+	std::any_cast<Glib::RefPtr<Gtk::FileChooserButton>>(els_pres["temporary"]) -> signal_file_set().connect(save_and_reload);
 
 	std::any_cast<Glib::RefPtr<Gtk::Button>>(els_pres["move"]) -> signal_clicked().connect(get_selected);
 	// std::any_cast<Glib::RefPtr<Gtk::Button>>(els_pres["move"]) -> signal_clicked().connect(get_selected);

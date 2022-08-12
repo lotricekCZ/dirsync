@@ -25,6 +25,7 @@ class variables {
 		uint16_t significant;
 		std::optional<std::vector<std::string>> whitelist;
 		std::optional<std::vector<std::filesystem::path>> dir_list;
+		std::optional<std::string> temporary_tmp;
 		std::optional<uint16_t> significant_tmp;
 		bool operation; // insert 0 or remove 1
 		variables() = default;
@@ -35,8 +36,8 @@ class variables {
 		std::set<std::filesystem::path> get_directories();
 		std::set<std::string> get_blacklist();
 		
-		void set_temporary(std::filesystem::path);
-		void set_temporary(std::string);
+		void set_temporary(std::filesystem::path tmp, bool force = 0);
+		void set_temporary(std::string tmp, bool force = 0);
 		std::filesystem::path get_temporary();
 		
 		uint8_t get_view_mode();
@@ -56,6 +57,7 @@ class variables {
 		bool remove_directory(std::vector<std::filesystem::path>);
 		bool remove_blacklist(std::vector<std::string>);
 
+		bool update_temporary();
 		bool update_directory();
 		bool update_blacklist();
 

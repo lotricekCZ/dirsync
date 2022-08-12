@@ -81,8 +81,9 @@ void list_file::add(found_file& f){
 	(**o)[static_cast<std::shared_ptr<file_column>>(*this) -> filetypes]
 		= filetypes();
 	// printf("%s: %i\n", __PRETTY_FUNCTION__, __LINE__);
-	(**o)[static_cast<std::shared_ptr<file_column>>(*this) -> color]
-		= Gdk::RGBA("rgba(60, 60, 60, 1)");
+	if(f.get_occurence_count() == 1)
+		(**o)[static_cast<std::shared_ptr<file_column>>(*this) -> color]
+			= Gdk::RGBA("rgba(255, 255, 31, 0.5)");
 	// printf("%s: %i\n", __PRETTY_FUNCTION__, __LINE__);
 	}
 
