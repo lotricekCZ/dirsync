@@ -4,3 +4,6 @@
 [submodule "libs/yaml-cpp"]
 	path = libs/yaml-cpp
 	url = https://github.com/jbeder/yaml-cpp.git
+[submodule "libs/wt"]
+	path = libs/wt
+	url = https://github.com/emweb/wt.git

@@ -1,3 +1,4 @@
 directories: []
-significant: 1
-blacklist: [.bk, .xml]
+significant: 20
+blacklist: [.xml]
+temporary: ""

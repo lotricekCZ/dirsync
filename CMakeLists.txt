@@ -1,8 +1,6 @@
 cmake_minimum_required(VERSION 3.1)
 set(CMAKE_CXX_COMPILER "/usr/bin/g++")
 set(CMAKE_C_COMPILER "/usr/bin/gcc")
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED True)	
 
 
 set(DIRSYNC_PROJECT_NAME dirsync)
@@ -12,6 +10,10 @@ set(DIRSYNC_LIBRARIES_DIR libs)
 set(DIRSYNC_LIBRARIES
 	yaml-cpp
 	)
+
+# set(CMAKE_TOOLCHAIN_FILE ${CMAKE_CURRENT_SOURCE_DIR}/toolchains/windows_gcc.txt)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED True)	
 
 project(${DIRSYNC_PROJECT_NAME} VERSION 0.0.0)
 set(CMAKE_CXX_FLAGS "-std=c++17 -g ${CMAKE_CXX_FLAGS}")
@@ -42,48 +44,19 @@ set(THREADS_PREFER_PTHREAD_FLAG ON)
 
 find_package(Threads REQUIRED)
 find_package(PkgConfig REQUIRED)
+
+
+# include(ExternalProject)
+# ExternalProject_Add(GTKMM3
+# 	SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/libs/gtkmm
+# 	CONFIGURE_COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/libs/gtkmm/autogen.sh --prefix=${CMAKE_CURRENT_SOURCE_DIR}/libs/gtkmm/gtkmm_build
+# 	BUILD_COMMAND "${MAKE} -j4")
+
 pkg_check_modules(GTKMM3 REQUIRED gtkmm-3.0)
 include_directories(${GTKMM3_INCLUDE_DIRS})
 link_directories(${GTKMM3_LIBRARY_DIRS})
 # Add other flags to the compiler
 add_definitions(${GTKMM3_CFLAGS_OTHER})
-
-# pkg_search_module(YAML_CPP REQUIRED yaml-cpp)
-
-# if (YAML_CPP_FOUND)
-# 	# Print some message showing some of them
-# else ()
-# 	message(FATAL_ERROR "Could not locate yaml-cpp" \n)
-# endif()
-
-
-# include_directories(dirsync ${YAML_CPP_INCLUDEDIR} ${YAML_CPP_INCLUDE_DIRS})
-# link_directories(${CMAKE_CURRENT_SOURCE_DIR}/build)
-
-# add_library(yaml_worker SHARED ${CMAKE_CURRENT_SOURCE_DIR}/defines/yaml_worker.cpp)
-
-# target_include_directories(yaml_worker
-# 	PUBLIC
-# 		${CMAKE_CURRENT_SOURCE_DIR}/defines
-# 		${YAML_CPP_INCLUDEDIR} 
-# 		${YAML_CPP_INCLUDE_DIRS}
-# )
-
-# include(${CMAKE_CURRENT_SOURCE_DIR}/libs/argumentum/CMakeLists.txt)
-
-# add_library(log_maintain SHARED ${CMAKE_CURRENT_SOURCE_DIR}/utils/log_maintainer/log_maintain.cpp
-# 							${CMAKE_CURRENT_SOURCE_DIR}/utils/log_maintainer/log_maintain.hpp)
-							
-# add_library(path_wrapper	SHARED ${CMAKE_CURRENT_SOURCE_DIR}/utils/logic/path_wrapper.cpp)
-
-
-# include(${CMAKE_CURRENT_SOURCE_DIR}/hardware_interfaces/hardware_interfaces.txt)
-
-# target_link_libraries(obsolete variables coordinates)
-
-
-#~ target_link_libraries(serial -lCppLinuxSerial)
-# target_link_libraries(yaml_worker variables ${YAML_CPP_LIBRARIES})
 
 add_library(yaml_worker 	SHARED ${CMAKE_CURRENT_SOURCE_DIR}/src/yaml_worker/yaml_worker.cpp)
 add_library(variables 		SHARED ${CMAKE_CURRENT_SOURCE_DIR}/src/variables/variables.cpp)
